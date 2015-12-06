@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+  <link rel="stylesheet" type="text/css" href="media/style.css" media="screen">
+
+  <title>
+    travis.debian.net &mdash; Easily test your Debian packages on travis-ci.org
+  </title>
+</head>
+
+<body>
+
+<a href="https://github.com/lamby/travis.debian.net"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/567c3a48d796e2fc06ea80409cc9dd82bf714434/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png"></a>
+
+<header>
+  <div class="container">
+    <h1>travis.debian.net</h1>
+    <h2>Easily test your Debian packages on travis-ci.org</h2>
+  </div>
+</header>
+
+<div class="container">
+  <section id="main_content">
+    <h3>
+      What is this?
+    </h3>
+
+    <p>
+      <strong>travis.debian.net</strong> is a hosted script to make it easier
+      and cleaner to build Debian packages on the
+      <a href="https://travis-ci.org">Travis</a> hosted CI service without
+      duplicating configuration across 100s of repos.
+    </p>
+
+    <h3>
+      Quick setup
+    </h3>
+
+    <ul>
+      <li>
+        Enable builds for your package on <a href="https://travis-ci.org">travis-ci.org</a>
+      </li>
+      <li>
+        Ensure "<em>Only build where .travis.yml is present</em>" is enabled
+      </li>
+      <li>
+        Add <tt>.travis.yml</tt> to your
+        <a href="https://honk.sigxcpu.org/piki/projects/git-buildpackage/">git-buildpackage</a>
+        branches:
+
+        <pre>$ wget -O.travis.yml <a href="http://travis.debian.net/travis.yml">http://travis.debian.net/travis.yml</a></pre>
+      </li>
+      <li>
+        If you are using <a href="https://github.com/">GitHub</a>, your
+        package will be built automatically after pushing.
+      </li>
+    </ul>
+
+    <h3>
+      How it works
+    </h3>
+
+    <p>
+      First, <strong>travis.debian.net</strong> detects which release of Debian
+      the branch is targeting based on its branch name. The
+      <tt>experimental</tt> suite and all varieties of backports are
+      intelligently detected.
+    </p>
+
+    </p>
+      A throwaway <a href="https://www.docker.com/">Docker</a> image is then
+      created containing the corresponding build-dependencies
+    </p>
+
+    <p>
+      The package is then built in a clean environment which has no access to
+      the the internet. If the build fails, this is reported back to Travis.
+    </p>
+
+    <p>
+      <a href="https://lintian.debian.org/">Lintian</a> is then run on the
+      result and the binary packages are discarded for security.
+    </p>
+
+    <h3>
+      Links
+    </h3>
+
+    <ul>
+      <li>
+        <a href="https://github.com/lamby/travis.debian.net">Source code</a>
+      </li>
+      <li>
+        <a href="https://github.com/lamby/travis.debian.net/issues">Issues</a>
+      </li>
+      <li>
+        <a href="https://travis-ci.org">Travis CI</a>
+      </li>
+      <li>
+        <a href="https://honk.sigxcpu.org/piki/projects/git-buildpackage/">git-buildpackage</a>
+      </li>
+    </ul>
+
+    <h3>
+      Author / copyright
+    </h3>
+
+    <p>
+      &copy; 2015
+      <a href="https://chris-lamb.co.uk/">Chris Lamb</a>
+      &lt;<a href="mailto:lamby@debian.org" class="user-mention">lamby@debian.org</a>&gt;
+    </p>
+ </section>
+</div>
+
+</body>
+</html>
