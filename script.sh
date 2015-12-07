@@ -91,7 +91,7 @@ EOF
 
 cat Dockerfile
 
-docker build -t ${TRAVIS_BUILD_ID} .
+docker build --tag=${TRAVIS_BUILD_ID} .
 docker run --net=none ${TRAVIS_BUILD_ID}
 
 #  _                   _          _      _     _                          _
