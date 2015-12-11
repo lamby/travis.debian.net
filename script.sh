@@ -97,7 +97,7 @@ CIDFILE="$(mktemp)"
 rm -f ${CIDFILE}
 
 docker build --tag=${TRAVIS_BUILD_ID} .
-docker run --net=none --cidfile=${CIDFILE} ${TRAVIS_BUILD_ID}
+docker run --cidfile=${CIDFILE} ${TRAVIS_BUILD_ID}
 docker cp $(cat ${CIDFILE}):$(dirname "${TRAVIS_DEBIAN_WORKDIR}") debian/buildd
 
 #  _                   _          _      _     _                          _
