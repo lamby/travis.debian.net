@@ -94,7 +94,7 @@ EOF
 cat Dockerfile
 
 CIDFILE="$(mktemp)"
-rm -f ${CIDFILE}
+rm -f ${CIDFILE} # Cannot exist
 
 docker build --tag=${TRAVIS_BUILD_ID} .
 docker run --cidfile=${CIDFILE} ${TRAVIS_BUILD_ID}
