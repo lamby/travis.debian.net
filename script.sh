@@ -9,6 +9,7 @@ TRAVIS_DEBIAN_MIRROR="http://ftp.de.debian.org/debian"
 TRAVIS_DEBIAN_WORKDIR="/tmp/buildd/srcdir"
 TRAVIS_DEBIAN_BACKPORTS="${TRAVIS_DEBIAN_BACKPORTS:-false}"
 TRAVIS_DEBIAN_EXPERIMENTAL="${TRAVIS_DEBIAN_EXPERIMENTAL:-false}"
+TRAVIS_DEBIAN_NETWORK_ENABLED="${TRAVIS_DEBIAN_NETWORK_ENABLED:-false}"
 
 if [ "${TRAVIS_DEBIAN_DISTRIBUTION:-}" = "" ]
 then
@@ -96,8 +97,14 @@ cat Dockerfile
 CIDFILE="$(mktemp)"
 rm -f ${CIDFILE} # Cannot exist
 
+ARGS="--cidfile=${CIDFILE}"
+if [ "${TRAVIS_DEBIAN_NETWORK_ENABLED}" != "true" ]
+then
+	ARGS="${ARGS} --net=none"
+fi
+
 docker build --tag=${TRAVIS_BUILD_ID} .
-docker run --cidfile=${CIDFILE} ${TRAVIS_BUILD_ID}
+docker run ${ARGS} ${TRAVIS_BUILD_ID}
 docker cp $(cat ${CIDFILE}):$(dirname "${TRAVIS_DEBIAN_WORKDIR}") debian/buildd
 
 #  _                   _          _      _     _                          _
