@@ -12,7 +12,9 @@ TRAVIS_DEBIAN_EXPERIMENTAL="${TRAVIS_DEBIAN_EXPERIMENTAL:-false}"
 
 if [ "${TRAVIS_DEBIAN_DISTRIBUTION:-}" = "" ]
 then
-	if [ "${TRAVIS_BRANCH:-}" = "" ]
+	TRAVIS_DEBIAN_DISTRIBUTION="${TRAVIS_BRANCH:-}"
+
+	if [ "${TRAVIS_DEBIAN_DISTRIBUTION:-}" = "" ]
 	then
 		TRAVIS_DEBIAN_DISTRIBUTION="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo master)"
 	fi
