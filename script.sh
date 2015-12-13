@@ -28,7 +28,7 @@ log () {
 SOURCE="$(dpkg-parsechangelog --show-field Source)"
 VERSION="$(dpkg-parsechangelog --show-field Version)"
 
-log "Starting build of ${SOURCE} {$VERSOIN} using travis.debian.net"
+log "Starting build of ${SOURCE} ${VERSION} using travis.debian.net"
 
 TRAVIS_DEBIAN_MIRROR="${TRAVIS_DEBIAN_MIRROR:-http://httpredir.debian.org/debian}"
 TRAVIS_DEBIAN_NETWORK_ENABLED="${TRAVIS_DEBIAN_NETWORK_ENABLED:-false}"
