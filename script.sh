@@ -17,22 +17,29 @@
 
 set -eu
 
+## Functions ##################################################################
+
+log () {
+	echo "I: ${*}" >&2
+}
+
 ## Configuration ##############################################################
 
+log "Starting build using travis.debian.net"
+
 TRAVIS_BUILD_ID="${TRAVIS_BUILD_ID:-travis.debian.net}"
-TRAVIS_DEBIAN_MIRROR="${TRAVIS_DEBIAN_MIRROR:-http://ftp.de.debian.org/debian}"
+TRAVIS_DEBIAN_MIRROR="${TRAVIS_DEBIAN_MIRROR:-http://httpdir.debian.org/debian}"
+TRAVIS_DEBIAN_NETWORK_ENABLED="${TRAVIS_DEBIAN_NETWORK_ENABLED:-false}"
+
+#### Distribution #############################################################
 
 TRAVIS_DEBIAN_BACKPORTS="${TRAVIS_DEBIAN_BACKPORTS:-false}"
 TRAVIS_DEBIAN_EXPERIMENTAL="${TRAVIS_DEBIAN_EXPERIMENTAL:-false}"
-TRAVIS_DEBIAN_NETWORK_ENABLED="${TRAVIS_DEBIAN_NETWORK_ENABLED:-false}"
-
-if [ "${TRAVIS_DEBIAN_WORKDIR:-}" = "" ]
-then
-	TRAVIS_DEBIAN_WORKDIR="/tmp/buildd/srcdir"
-fi
 
 if [ "${TRAVIS_DEBIAN_DISTRIBUTION:-}" = "" ]
 then
+	log "Automatically detecting distribution"
+
 	TRAVIS_DEBIAN_DISTRIBUTION="${TRAVIS_BRANCH:-}"
 
 	if [ "${TRAVIS_DEBIAN_DISTRIBUTION:-}" = "" ]
@@ -71,6 +78,21 @@ then
 			;;
 	esac
 fi
+
+if [ "${TRAVIS_DEBIAN_WORKDIR:-}" = "" ]
+then
+	_SOURCE="$(dpkg-parsechangelog --show-field Source)"
+	_VERSION="$(dpkg-parsechangelog --show-field Version)"
+
+	TRAVIS_DEBIAN_WORKDIR="/tmp/buildd/${_SOURCE}-${_VERSION}"
+fi
+
+log "Using distribution: ${TRAVIS_DEBIAN_DISTRIBUTION}"
+log "Backports enabled: ${TRAVIS_DEBIAN_EXPERIMENTAL}"
+log "Experimental enabled: ${TRAVIS_DEBIAN_EXPERIMENTAL}"
+log "Will build in ${TRAVIS_DEBIAN_WORKDIR}"
+log "Using mirror ${TRAVIS_DEBIAN_MIRROR}"
+log "Network enabled during build: ${TRAVIS_DEBIAN_NETWORK_ENABLED}"
 
 ## Build ######################################################################
 
@@ -112,19 +134,25 @@ RUN git checkout .travis.yml || true
 CMD gbp buildpackage --git-ignore-branch --git-ignore-new --git-builder='debuild -i -I -uc -us -b'
 EOF
 
-cat Dockerfile
+log "Using Dockerfile:"
+sed -e 's@^@  @g' Dockerfile
+
+log "Building Docker image"
+docker build --tag=${TRAVIS_BUILD_ID} .
 
 CIDFILE="$(mktemp)"
+ARGS="--cidfile=${CIDFILE}"
 rm -f ${CIDFILE} # Cannot exist
 
-ARGS="--cidfile=${CIDFILE}"
 if [ "${TRAVIS_DEBIAN_NETWORK_ENABLED}" != "true" ]
 then
 	ARGS="${ARGS} --net=none"
 fi
 
-docker build --tag=${TRAVIS_BUILD_ID} .
+log "Running build"
 docker run ${ARGS} ${TRAVIS_BUILD_ID}
+
+log "Copying build artefacts to debian/buildd"
 docker cp $(cat ${CIDFILE}):$(dirname "${TRAVIS_DEBIAN_WORKDIR}") debian/buildd
 
 #  _                   _          _      _     _                          _
