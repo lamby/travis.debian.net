@@ -25,9 +25,11 @@ log () {
 
 ## Configuration ##############################################################
 
-log "Starting build using travis.debian.net"
+SOURCE="$(dpkg-parsechangelog --show-field Source)"
+VERSION="$(dpkg-parsechangelog --show-field Version)"
 
-TRAVIS_BUILD_ID="${TRAVIS_BUILD_ID:-travis.debian.net}"
+log "Starting build of ${SOURCE} {$VERSOIN} using travis.debian.net"
+
 TRAVIS_DEBIAN_MIRROR="${TRAVIS_DEBIAN_MIRROR:-http://httpredir.debian.org/debian}"
 TRAVIS_DEBIAN_NETWORK_ENABLED="${TRAVIS_DEBIAN_NETWORK_ENABLED:-false}"
 
@@ -81,10 +83,7 @@ fi
 
 if [ "${TRAVIS_DEBIAN_WORKDIR:-}" = "" ]
 then
-	_SOURCE="$(dpkg-parsechangelog --show-field Source)"
-	_VERSION="$(dpkg-parsechangelog --show-field Version)"
-
-	TRAVIS_DEBIAN_WORKDIR="/tmp/buildd/${_SOURCE}-${_VERSION}"
+	TRAVIS_DEBIAN_WORKDIR="/tmp/buildd/${SOURCE}-${VERSION}"
 fi
 
 log "Using distribution: ${TRAVIS_DEBIAN_DISTRIBUTION}"
