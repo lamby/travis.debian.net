@@ -5,11 +5,16 @@ set -eux
 ## Configuration ##############################################################
 
 TRAVIS_BUILD_ID="${TRAVIS_BUILD_ID:-travis.debian.net}"
+
 TRAVIS_DEBIAN_MIRROR="http://ftp.de.debian.org/debian"
-TRAVIS_DEBIAN_WORKDIR="/tmp/buildd/srcdir"
 TRAVIS_DEBIAN_BACKPORTS="${TRAVIS_DEBIAN_BACKPORTS:-false}"
 TRAVIS_DEBIAN_EXPERIMENTAL="${TRAVIS_DEBIAN_EXPERIMENTAL:-false}"
 TRAVIS_DEBIAN_NETWORK_ENABLED="${TRAVIS_DEBIAN_NETWORK_ENABLED:-false}"
+
+if [ "${TRAVIS_DEBIAN_WORKDIR:-}" = "" ]
+then
+	TRAVIS_DEBIAN_WORKDIR="/tmp/buildd/srcdir"
+fi
 
 if [ "${TRAVIS_DEBIAN_DISTRIBUTION:-}" = "" ]
 then
