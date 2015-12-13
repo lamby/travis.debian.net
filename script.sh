@@ -28,7 +28,7 @@ log () {
 log "Starting build using travis.debian.net"
 
 TRAVIS_BUILD_ID="${TRAVIS_BUILD_ID:-travis.debian.net}"
-TRAVIS_DEBIAN_MIRROR="${TRAVIS_DEBIAN_MIRROR:-http://httpdir.debian.org/debian}"
+TRAVIS_DEBIAN_MIRROR="${TRAVIS_DEBIAN_MIRROR:-http://httpredir.debian.org/debian}"
 TRAVIS_DEBIAN_NETWORK_ENABLED="${TRAVIS_DEBIAN_NETWORK_ENABLED:-false}"
 
 #### Distribution #############################################################
@@ -138,7 +138,7 @@ log "Using Dockerfile:"
 sed -e 's@^@  @g' Dockerfile
 
 log "Building Docker image"
-docker build --tag=${TRAVIS_BUILD_ID} .
+docker build --no-cache --tag=${TRAVIS_BUILD_ID} .
 
 CIDFILE="$(mktemp)"
 ARGS="--cidfile=${CIDFILE}"
