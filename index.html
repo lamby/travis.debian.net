@@ -24,27 +24,29 @@
 
 <div class="container">
   <section id="main_content">
-    <h3>
+    <h3 id="what">
       What is this?
     </h3>
 
     <p>
-      <strong>travis.debian.net</strong> is a hosted script to make it easier
-      and cleaner to build Debian packages on the
-      <a href="https://travis-ci.org">Travis</a> hosted CI service without
-      duplicating configuration across 100s of repos.
+      <tt>travis.debian.net</tt> is a hosted script to make it easier and
+      cleaner to Debian packages on the
+      <a href="https://travis-ci.org">Travis CI</a> hosted continuous
+      integration service, without duplicating configuration across 100's of
+      repos.
     </p>
 
-    <h3>
+    <h3 id="quick-setup">
       Quick setup
     </h3>
 
     <ul>
       <li>
-        Enable builds for your package on <a href="https://travis-ci.org">travis-ci.org</a>
+        Enable builds for your package on
+        <a href="https://travis-ci.org">travis-ci.org</a>.
       </li>
       <li>
-        Ensure "<em>Only build where .travis.yml is present</em>" is enabled
+        Ensure "<em>Only build where .travis.yml is present</em>" is enabled.
       </li>
       <li>
         Add <tt>.travis.yml</tt> to your
@@ -59,42 +61,105 @@
       </li>
     </ul>
 
-    <h3>
+    <h3 id="how">
       How it works
     </h3>
 
     <p>
-      First, <strong>travis.debian.net</strong> detects which release of Debian
-      the branch is targeting based on its branch name. The
-      <tt>experimental</tt> suite and all varieties of backports are
+      First, <tt>travis.debian.net</tt> detects which release of Debian
+      the branch is targeting based on the current branch name. The
+      <em>experimental</em> suite and all varieties of backports are
       intelligently detected.
     </p>
 
     </p>
       A throwaway <a href="https://www.docker.com/">Docker</a> image is then
-      created containing the corresponding build-dependencies
+      created containing all the required build-dependencies. The package is
+      then built in this isolated environment with no access to the internet.
     </p>
 
     <p>
-      The package is then built in a clean environment which has no access to
-      the the internet. If the build fails, this is reported back to Travis.
+      <a href="https://lintian.debian.org/">Lintian</a> is run on the result
+      and the binary packages are saved to <tt>debian/buildd</tt>.
     </p>
+
+    <h3 id="configuration">
+      Configuration
+    </h3>
 
     <p>
-      <a href="https://lintian.debian.org/">Lintian</a> is then run on the
-      result and the binary packages and source dir are saved in <tt>debian/buildd</tt>
+      Configuration is performed by setting various environment variables. You
+      can do this within the Travis CI web interface itself.
     </p>
 
-    <h3>
+    <dl>
+      <dt>
+        TRAVIS_DEBIAN_DISTRIBUTION
+      </dt>
+      <dd>
+        Which distribution of Debian the package should be built in. By
+        default, this is automatically detected from the branch name.
+      </dd>
+      <dt>
+        TRAVIS_DEBIAN_BACKPORTS
+      </dt>
+      <dd>
+        When <tt>true</tt>, the corresponding backports repository will be enabled in
+        /etc/apt/sources.list. If <tt>TRAVIS_DEBIAN_DISTRIBUTION</tt> is not
+        set, the value is automatically detected.
+      </dd>
+      <dt>
+        TRAVIS_DEBIAN_EXPERIMENTAL
+      </dt>
+      <dd>
+        When <tt>true</tt>, Debian's <em>experimental</em> repository will be
+        enabled. If <tt>TRAVIS_DEBIAN_DISTRIBUTION</tt> is not set, the value
+        is automatically detected.
+      </dd>
+      <dt>
+        TRAVIS_DEBIAN_MIRROR
+      </dt>
+      <dd>
+        Which Debian mirror to use. By default, the
+        <a href="http://httpredir.debian.org/">httpredir.debian.org</a>
+        redirection service is used.
+      </dd>
+      <dt>
+        TRAVIS_DEBIAN_NETWORK_ENABLED
+      </dt>
+      <dd>
+        By default, the network is disabled during the package build process.
+        If your build really needs internet access, set this value to
+        <tt>true</tt>.
+      </dd>
+    </dl>
+
+    <h3 id="faq">
+      Frequently asked questions (FAQ)
+    </h3>
+
+    <dl>
+      <dt>
+        Q: But <tt>wget | sh -</tt> is insecure!
+      </dt>
+      <dd>
+        A: Normally, absolutely. However, Travis-CI builds within isolated
+        containers and there is no expectation that the resulting
+        <tt>.deb</tt> files are to be used or installed anywhere.
+      </dd>
+    </dl>
+
+    <h3 id="links">
       Links
     </h3>
 
     <ul>
       <li>
-        <a href="https://github.com/lamby/travis.debian.net">Source code</a>
-      </li>
-      <li>
+        <a href="https://github.com/lamby/travis.debian.net">Source</a>
+        &bull;
         <a href="https://github.com/lamby/travis.debian.net/issues">Issues</a>
+        &bull;
+        <a href="https://github.com/lamby/travis.debian.net/pulls">Pull requests</a>
       </li>
       <li>
         <a href="https://travis-ci.org">Travis CI</a>
@@ -105,13 +170,20 @@
     </ul>
 
     <h3>
-      Author / copyright
+      Copyright
     </h3>
 
     <p>
-      &copy; 2015
+      Copyright &copy; 2015
       <a href="https://chris-lamb.co.uk/">Chris Lamb</a>
-      &lt;<a href="mailto:lamby@debian.org" class="user-mention">lamby@debian.org</a>&gt;
+      &lt;<a href="mailto:lamby@debian.org" class="user-mention">lamby@debian.org</a>&gt;.
+    </p>
+
+    <p>
+      This program is free software: you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation, either version 3 of the License, or
+      (at your option) any later version.
     </p>
  </section>
 </div>
