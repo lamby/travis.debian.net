@@ -136,8 +136,10 @@ EOF
 log "Using Dockerfile:"
 sed -e 's@^@  @g' Dockerfile
 
+TAG="travis.debian.net/${SOURCE}:${VERSION}"
+
 log "Building Docker image"
-docker build --no-cache --tag=${TRAVIS_BUILD_ID} .
+docker build --no-cache --tag=${TAG} .
 
 CIDFILE="$(mktemp)"
 ARGS="--cidfile=${CIDFILE}"
@@ -149,7 +151,7 @@ then
 fi
 
 log "Running build"
-docker run ${ARGS} ${TRAVIS_BUILD_ID}
+docker run ${ARGS} ${TAG}
 
 log "Copying build artefacts to debian/buildd"
 docker cp $(cat ${CIDFILE}):$(dirname "${TRAVIS_DEBIAN_WORKDIR}") debian/buildd
