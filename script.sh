@@ -83,7 +83,7 @@ fi
 
 cat >>Dockerfile <<EOF
 RUN apt-get update && apt-get dist-upgrade --yes
-RUN apt-get install --yes build-essential equivs devscripts git-buildpackage
+RUN apt-get install --yes --no-install-recommends build-essential equivs devscripts git-buildpackage
 
 WORKDIR ${TRAVIS_DEBIAN_WORKDIR}
 
