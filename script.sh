@@ -142,6 +142,9 @@ TAG="travis.debian.net/${SOURCE}:${VERSION}"
 log "Building Docker image ${TAG}"
 docker build --tag=${TAG} .
 
+log "Removing Dockerfile"
+rm -f Dockerfile
+
 CIDFILE="$(mktemp)"
 ARGS="--cidfile=${CIDFILE}"
 rm -f ${CIDFILE} # Cannot exist
