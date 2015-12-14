@@ -139,7 +139,7 @@ sed -e 's@^@  @g' Dockerfile
 TAG="travis.debian.net/${SOURCE}:${VERSION}"
 
 log "Building Docker image"
-docker build --no-cache --tag=${TAG} .
+docker build --tag=${TAG} .
 
 CIDFILE="$(mktemp)"
 ARGS="--cidfile=${CIDFILE}"
