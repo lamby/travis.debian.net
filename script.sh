@@ -32,6 +32,8 @@ UPSTREAM_VERSION="$(echo "${VERSION}" | sed -e 's@^[0-9]*:@@g' -e 's/-[^-]*$//')
 log "Starting build of ${SOURCE} ${VERSION} (${UPSTREAM_VERSION}) using travis.debian.net"
 
 TRAVIS_DEBIAN_MIRROR="${TRAVIS_DEBIAN_MIRROR:-http://httpredir.debian.org/debian}"
+TRAVIS_DEBIAN_BUILD_DIR="${TRAVIS_DEBIAN_BUILD_DIR:-/tmp/buildd}"
+TRAVIS_DEBIAN_TARGET_DIR="${TRAVIS_DEBIAN_TARGET_DIR:-./debian/buildd}"
 TRAVIS_DEBIAN_NETWORK_ENABLED="${TRAVIS_DEBIAN_NETWORK_ENABLED:-false}"
 
 #### Distribution #############################################################
@@ -82,15 +84,11 @@ then
 	esac
 fi
 
-if [ "${TRAVIS_DEBIAN_WORKDIR:-}" = "" ]
-then
-	TRAVIS_DEBIAN_WORKDIR="/tmp/buildd/${SOURCE}-${UPSTREAM_VERSION}"
-fi
-
 log "Using distribution: ${TRAVIS_DEBIAN_DISTRIBUTION}"
 log "Backports enabled: ${TRAVIS_DEBIAN_EXPERIMENTAL}"
 log "Experimental enabled: ${TRAVIS_DEBIAN_EXPERIMENTAL}"
-log "Will build in ${TRAVIS_DEBIAN_WORKDIR}"
+log "Will build under ${TRAVIS_DEBIAN_BUILD_DIR}"
+log "Will store results under ${TRAVIS_DEBIAN_TARGET_DIR}"
 log "Using mirror ${TRAVIS_DEBIAN_MIRROR}"
 log "Network enabled during build: ${TRAVIS_DEBIAN_NETWORK_ENABLED}"
 
@@ -129,15 +127,18 @@ RUN env DEBIAN_FRONTEND=noninteractive mk-build-deps --install --remove --tool '
 
 RUN rm -f Dockerfile
 RUN git checkout .travis.yml || true
-RUN mkdir -p "$(dirname "${TRAVIS_DEBIAN_WORKDIR}")"
+RUN mkdir -p ${TRAVIS_DEBIAN_BUILD_DIR}
 
-CMD gbp buildpackage --git-ignore-branch --git-export-dir=${TRAVIS_DEBIAN_WORKDIR} --git-ignore-new --git-builder='debuild -i -I -uc -us'
+CMD gbp buildpackage --git-ignore-branch --git-export-dir=${TRAVIS_DEBIAN_BUILD_DIR} --git-ignore-new --git-builder='debuild -i -I -uc -us'
 EOF
 
 log "Using Dockerfile:"
 sed -e 's@^@  @g' Dockerfile
 
 TAG="travis.debian.net/${SOURCE}:${VERSION}"
+
+log "Clearing ${TRAVIS_DEBIAN_TARGET_DIR}"
+rm -rf "${TRAVIS_DEBIAN_TARGET_DIR}"
 
 log "Building Docker image"
 docker build --tag=${TAG} .
@@ -154,8 +155,8 @@ fi
 log "Running build"
 docker run ${ARGS} ${TAG}
 
-log "Copying build artefacts to debian/buildd"
-docker cp $(cat ${CIDFILE}):${TRAVIS_DEBIAN_WORKDIR} debian/buildd
+log "Copying build artefacts to ${TRAVIS_DEBIAN_TARGET_DIR}"
+docker cp "$(cat ${CIDFILE}):${TRAVIS_DEBIAN_BUILD_DIR}" "${TRAVIS_DEBIAN_TARGET_DIR}"
 
 #  _                   _          _      _     _                          _
 # | |_ _ __ __ ___   _(_)___   __| | ___| |__ (_) __ _ _ __    _ __   ___| |_
