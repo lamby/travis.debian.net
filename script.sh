@@ -133,9 +133,6 @@ EOF
 log "Using Dockerfile:"
 sed -e 's@^@  @g' Dockerfile
 
-log "Clearing ${TRAVIS_DEBIAN_TARGET_DIR}"
-rm -rf "${TRAVIS_DEBIAN_TARGET_DIR}"
-
 TAG="travis.debian.net/${SOURCE}"
 
 log "Building Docker image ${TAG}"
