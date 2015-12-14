@@ -152,7 +152,7 @@ fi
 
 if [ "${DEB_BUILD_OPTIONS:-}" != "" ]
 then
-	ARGS="${ARGS} --env=DEB_BUILD_OPTIONS=\"${DEB_BUILD_OPTIONS}\""
+	ARGS="${ARGS} --env=DEB_BUILD_OPTIONS='${DEB_BUILD_OPTIONS}'"
 fi
 
 log "Running build"
