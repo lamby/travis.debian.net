@@ -27,9 +27,8 @@ log () {
 
 SOURCE="$(dpkg-parsechangelog --show-field Source)"
 VERSION="$(dpkg-parsechangelog --show-field Version)"
-UPSTREAM_VERSION="$(echo "${VERSION}" | sed -e 's@^[0-9]*:@@g' -e 's/-[^-]*$//')"
 
-log "Starting build of ${SOURCE} ${VERSION} (${UPSTREAM_VERSION}) using travis.debian.net"
+log "Starting build of ${SOURCE} ${VERSION} using travis.debian.net"
 
 TRAVIS_DEBIAN_MIRROR="${TRAVIS_DEBIAN_MIRROR:-http://httpredir.debian.org/debian}"
 TRAVIS_DEBIAN_BUILD_DIR="${TRAVIS_DEBIAN_BUILD_DIR:-/tmp/buildd}"
