@@ -27,8 +27,9 @@ log () {
 
 SOURCE="$(dpkg-parsechangelog --show-field Source)"
 VERSION="$(dpkg-parsechangelog --show-field Version)"
+UPSTREAM_VERSION="$(echo "${VERSION}" | sed -e 's@^[0-9]*:@@g' -e 's/-[^-]*$//')"
 
-log "Starting build of ${SOURCE} ${VERSION} using travis.debian.net"
+log "Starting build of ${SOURCE} ${VERSION} (${UPSTREAM_VERSION}) using travis.debian.net"
 
 TRAVIS_DEBIAN_MIRROR="${TRAVIS_DEBIAN_MIRROR:-http://httpredir.debian.org/debian}"
 TRAVIS_DEBIAN_NETWORK_ENABLED="${TRAVIS_DEBIAN_NETWORK_ENABLED:-false}"
@@ -83,7 +84,7 @@ fi
 
 if [ "${TRAVIS_DEBIAN_WORKDIR:-}" = "" ]
 then
-	TRAVIS_DEBIAN_WORKDIR="/tmp/buildd/${SOURCE}-${VERSION}"
+	TRAVIS_DEBIAN_WORKDIR="/tmp/buildd/${SOURCE}-${UPSTREAM_VERSION}"
 fi
 
 log "Using distribution: ${TRAVIS_DEBIAN_DISTRIBUTION}"
@@ -121,16 +122,16 @@ cat >>Dockerfile <<EOF
 RUN apt-get update && apt-get dist-upgrade --yes
 RUN apt-get install --yes --no-install-recommends build-essential equivs devscripts git-buildpackage
 
-WORKDIR ${TRAVIS_DEBIAN_WORKDIR}
-
+WORKDIR $(pwd)
 COPY . .
 
 RUN env DEBIAN_FRONTEND=noninteractive mk-build-deps --install --remove --tool 'apt-get --no-install-recommends --yes' debian/control
 
 RUN rm -f Dockerfile
 RUN git checkout .travis.yml || true
+RUN mkdir -p "$(dirname "${TRAVIS_DEBIAN_WORKDIR}")"
 
-CMD gbp buildpackage --git-ignore-branch --git-ignore-new --git-builder='debuild -i -I -uc -us -b'
+CMD gbp buildpackage --git-ignore-branch --git-export-dir=${TRAVIS_DEBIAN_WORKDIR} --git-ignore-new --git-builder='debuild -i -I -uc -us -b'
 EOF
 
 log "Using Dockerfile:"
@@ -154,7 +155,7 @@ log "Running build"
 docker run ${ARGS} ${TAG}
 
 log "Copying build artefacts to debian/buildd"
-docker cp $(cat ${CIDFILE}):$(dirname "${TRAVIS_DEBIAN_WORKDIR}") debian/buildd
+docker cp $(cat ${CIDFILE}):${TRAVIS_DEBIAN_WORKDIR} debian/buildd
 
 #  _                   _          _      _     _                          _
 # | |_ _ __ __ ___   _(_)___   __| | ___| |__ (_) __ _ _ __    _ __   ___| |_
