@@ -131,7 +131,7 @@ RUN rm -f Dockerfile
 RUN git checkout .travis.yml || true
 RUN mkdir -p "$(dirname "${TRAVIS_DEBIAN_WORKDIR}")"
 
-CMD gbp buildpackage --git-ignore-branch --git-export-dir=${TRAVIS_DEBIAN_WORKDIR} --git-ignore-new --git-builder='debuild -i -I -uc -us -b'
+CMD gbp buildpackage --git-ignore-branch --git-export-dir=${TRAVIS_DEBIAN_WORKDIR} --git-ignore-new --git-builder='debuild -i -I -uc -us'
 EOF
 
 log "Using Dockerfile:"
