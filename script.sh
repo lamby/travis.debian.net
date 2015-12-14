@@ -134,12 +134,12 @@ EOF
 log "Using Dockerfile:"
 sed -e 's@^@  @g' Dockerfile
 
-TAG="travis.debian.net/${SOURCE}:${VERSION}"
-
 log "Clearing ${TRAVIS_DEBIAN_TARGET_DIR}"
 rm -rf "${TRAVIS_DEBIAN_TARGET_DIR}"
 
-log "Building Docker image"
+TAG="travis.debian.net/${SOURCE}:${VERSION}"
+
+log "Building Docker image ${TAG}"
 docker build --tag=${TAG} .
 
 CIDFILE="$(mktemp)"
