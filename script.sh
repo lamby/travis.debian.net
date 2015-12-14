@@ -157,7 +157,9 @@ log "Running build"
 docker run ${ARGS} ${TAG}
 
 log "Copying build artefacts to ${TRAVIS_DEBIAN_TARGET_DIR}"
-docker cp "$(cat ${CIDFILE}):${TRAVIS_DEBIAN_BUILD_DIR}" "${TRAVIS_DEBIAN_TARGET_DIR}"
+mkdir -p "${TRAVIS_DEBIAN_TARGET_DIR}"
+docker cp "$(cat ${CIDFILE}):${TRAVIS_DEBIAN_BUILD_DIR}"/ - \
+	| tar xf - -C "${TRAVIS_DEBIAN_TARGET_DIR}" --strip-components=1
 
 log "Removing container"
 docker rm "$(cat ${CIDFILE})" >/dev/null
