@@ -158,6 +158,8 @@ docker run ${ARGS} ${TAG}
 log "Copying build artefacts to ${TRAVIS_DEBIAN_TARGET_DIR}"
 docker cp "$(cat ${CIDFILE}):${TRAVIS_DEBIAN_BUILD_DIR}" "${TRAVIS_DEBIAN_TARGET_DIR}"
 
+cat "${TRAVIS_DEBIAN_TARGET_DIR}"/*.changes
+
 #  _                   _          _      _     _                          _
 # | |_ _ __ __ ___   _(_)___   __| | ___| |__ (_) __ _ _ __    _ __   ___| |_
 # | __| '__/ _` \ \ / / / __| / _` |/ _ \ '_ \| |/ _` | '_ \  | '_ \ / _ \ __|
