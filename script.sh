@@ -157,6 +157,10 @@ docker run ${ARGS} ${TAG}
 log "Copying build artefacts to ${TRAVIS_DEBIAN_TARGET_DIR}"
 docker cp "$(cat ${CIDFILE}):${TRAVIS_DEBIAN_BUILD_DIR}" "${TRAVIS_DEBIAN_TARGET_DIR}"
 
+log "Removing container"
+docker rm "$(cat ${CIDFILE})" >/dev/null
+rm -f "${CIDFILE}"
+
 cat "${TRAVIS_DEBIAN_TARGET_DIR}"/*.changes
 
 #  _                   _          _      _     _                          _
