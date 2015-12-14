@@ -98,15 +98,18 @@
     </p>
 
     <p>
-      Variables that affect the Debian build process are handled as usual (eg.
-      <a href="https://www.debian.org/doc/debian-policy/ch-source.html#s-debianrules-options">DEB_BUILD_OPTIONS</a>).
-    </p>
-
-    <p>
       Please note that the current API is unstable.
     </p>
 
     <dl>
+      <dt>
+        DEB_BUILD_OPTIONS
+      </dt>
+      <dd>
+        This variable is passed without modification to the build process and
+        modifies the build process
+        <a href="https://www.debian.org/doc/debian-policy/ch-source.html#s-debianrules-options">as outlined in Debian Policy</a>.
+      </dd>
       <dt>
         TRAVIS_DEBIAN_DISTRIBUTION
       </dt>
