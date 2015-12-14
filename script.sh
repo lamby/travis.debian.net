@@ -161,7 +161,8 @@ log "Removing container"
 docker rm "$(cat ${CIDFILE})" >/dev/null
 rm -f "${CIDFILE}"
 
-cat "${TRAVIS_DEBIAN_TARGET_DIR}"/*.changes
+log "Build successful"
+sed -e 's@^@  @g' "${TRAVIS_DEBIAN_TARGET_DIR}"/*.changes
 
 #  _                   _          _      _     _                          _
 # | |_ _ __ __ ___   _(_)___   __| | ___| |__ (_) __ _ _ __    _ __   ___| |_
