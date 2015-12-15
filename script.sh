@@ -150,13 +150,8 @@ then
 	ARGS="${ARGS} --net=none"
 fi
 
-if [ "${DEB_BUILD_OPTIONS:-}" != "" ]
-then
-	ARGS="${ARGS} --env=DEB_BUILD_OPTIONS='${DEB_BUILD_OPTIONS}'"
-fi
-
 log "Running build"
-docker run ${ARGS} ${TAG}
+docker run --env=DEB_BUILD_OPTIONS="${DEB_BUILD_OPTIONS:-}" ${ARGS} ${TAG}
 
 log "Copying build artefacts to ${TRAVIS_DEBIAN_TARGET_DIR}"
 mkdir -p "${TRAVIS_DEBIAN_TARGET_DIR}"
