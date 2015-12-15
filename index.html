@@ -177,6 +177,14 @@
         containers and there is no expectation that the resulting
         <tt>.deb</tt> files are to be used or installed anywhere.
       </dd>
+      <dt>
+        Q: What happens if upstream already includes a <tt>.travis.yml</tt>?
+      </dt>
+      <dd>
+        A: This is an unresolved issue. Whilst you could simply override it,
+        <tt>dpkg-source</tt> requires that all upstream changes are integrated
+        into the Quilt patch series, etc.
+      </dd>
     </dl>
 
     <h3 id="links">
