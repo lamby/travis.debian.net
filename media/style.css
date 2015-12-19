@@ -81,7 +81,9 @@ header h2 {
   -webkit-font-smoothing: antialiased;
 }
 section img {
-  max-width: 100%
+  max-width: 100%;
+  padding-top: 15px;
+  padding-bottom: 5px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -143,11 +145,13 @@ dd {
 }
 
 
+ol li,
 ul li {
   list-style: none;
   margin-top: 15px;
 }
 
+ol li:before,
 ul li:before {
   content: ">>";
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;

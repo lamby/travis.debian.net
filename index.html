@@ -40,13 +40,15 @@
       Quick setup
     </h3>
 
-    <ul>
+    <ol>
       <li>
         Enable builds for your package on
-        <a href="https://travis-ci.org">travis-ci.org</a>.
+        <a href="https://travis-ci.org">travis-ci.org</a>:
+        <img src="media/images/enable.png">
       </li>
       <li>
-        Ensure "<em>Only build where .travis.yml is present</em>" is enabled.
+        Ensure "<em>Only build if .travis.yml is present</em>" is enabled:
+        <img src="media/images/settings.png">
       </li>
       <li>
         Add <tt>.travis.yml</tt> to your
@@ -57,9 +59,10 @@
       </li>
       <li>
         If you are using <a href="https://github.com/">GitHub</a>, your
-        package will be built automatically after pushing.
+        package will be built automatically after pushing:
+        <img src="media/images/log.png">
       </li>
-    </ul>
+    </ol>
 
     <h3 id="how">
       How it works
@@ -85,7 +88,7 @@
 
     <p>
       <a href="https://lintian.debian.org/">Lintian</a> is run on the result
-      and the binary packages are saved to <tt>debian/buildd</tt>.
+      and the binary packages are saved to the parent directory.
     </p>
 
     <h3 id="configuration">
@@ -98,7 +101,7 @@
     </p>
 
     <p>
-      Please note that the current API is unstable.
+      Please note that the API is currently unstable.
     </p>
 
     <dl>
@@ -173,9 +176,9 @@
         Q: But <tt>wget | sh -</tt> is insecure!
       </dt>
       <dd>
-        A: Normally, absolutely. However, Travis-CI builds within isolated
-        containers and there is no expectation that the resulting
-        <tt>.deb</tt> files are to be used or installed anywhere.
+        A: Absolutely. However, not only does Travis-CI builds within isolated
+        containers there is no expectation that the resulting <tt>.deb</tt>
+        files are to be used or installed anywhere.
       </dd>
       <dt>
         Q: What happens if upstream already includes a <tt>.travis.yml</tt>?
@@ -214,7 +217,7 @@
     <p>
       Copyright &copy; 2015
       <a href="https://chris-lamb.co.uk/">Chris Lamb</a>
-      &lt;<a href="mailto:lamby@debian.org" class="user-mention">lamby@debian.org</a>&gt;.
+      &lt;<a href="mailto:lamby@debian.org" class="user-mention">lamby@debian.org</a>&gt;
     </p>
 
     <p>
