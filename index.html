@@ -56,6 +56,7 @@
         branches:
 
         <pre>$ wget -O.travis.yml <a href="http://travis.debian.net/travis.yml">http://travis.debian.net/travis.yml</a></pre>
+        <pre>$ echo 'extend-diff-ignore = "^\.travis\.yml$"' &gt;&gt; <br>      debian/source/options</pre>
       </li>
       <li>
         If you are using <a href="https://github.com/">GitHub</a>, your
@@ -181,14 +182,6 @@
         containers that you are not responsible for, cannot trust, and generally
         don't care about, there is zero expectation that the resulting
         <tt>.deb</tt> files are to be used or installed anywhere.
-      </dd>
-      <dt>
-        Q: What happens if upstream already includes a <tt>.travis.yml</tt>?
-      </dt>
-      <dd>
-        A: This is an unresolved issue. Whilst you could simply override it,
-        <tt>dpkg-source</tt> requires that all upstream changes are integrated
-        into the Quilt patch series, etc.
       </dd>
     </dl>
 
