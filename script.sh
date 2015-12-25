@@ -83,7 +83,7 @@ then
 fi
 
 log "Using distribution: ${TRAVIS_DEBIAN_DISTRIBUTION}"
-log "Backports enabled: ${TRAVIS_DEBIAN_EXPERIMENTAL}"
+log "Backports enabled: ${TRAVIS_DEBIAN_BACKPORTS}"
 log "Experimental enabled: ${TRAVIS_DEBIAN_EXPERIMENTAL}"
 log "Will build under ${TRAVIS_DEBIAN_BUILD_DIR}"
 log "Will store results under ${TRAVIS_DEBIAN_TARGET_DIR}"
