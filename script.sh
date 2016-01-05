@@ -126,9 +126,18 @@ RUN env DEBIAN_FRONTEND=noninteractive mk-build-deps --install --remove --tool '
 RUN rm -f Dockerfile
 RUN git checkout .travis.yml || true
 RUN mkdir -p ${TRAVIS_DEBIAN_BUILD_DIR}
+EOF
 
+if [ "${TRAVIS_DEBIAN_DISTRIBUTION}" = "wheezy" ]
+then
+	cat >>Dockerfile <<EOF
+CMD git-buildpackage --git-ignore-branch --git-export-dir=${TRAVIS_DEBIAN_BUILD_DIR} --git-builder='debuild -i -I -uc -us -sa'
+EOF
+else
+	cat >>Dockerfile <<EOF
 CMD gbp buildpackage --git-ignore-branch --git-export-dir=${TRAVIS_DEBIAN_BUILD_DIR} --git-builder='debuild -i -I -uc -us -sa'
 EOF
+fi
 
 log "Using Dockerfile:"
 sed -e 's@^@  @g' Dockerfile
