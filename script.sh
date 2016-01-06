@@ -45,7 +45,7 @@ TRAVIS_DEBIAN_EXPERIMENTAL="${TRAVIS_DEBIAN_EXPERIMENTAL:-false}"
 
 if [ "${TRAVIS_DEBIAN_DISTRIBUTION:-}" = "" ]
 then
-	log "Automatically detecting distribution"
+	Info "Automatically detecting distribution"
 
 	TRAVIS_DEBIAN_DISTRIBUTION="${TRAVIS_BRANCH:-}"
 
