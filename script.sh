@@ -70,6 +70,9 @@ then
 
 	# Detect codenames
 	case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
+		oldstable)
+			TRAVIS_DEBIAN_DISTRIBUTION="wheezy"
+			;;
 		stable)
 			TRAVIS_DEBIAN_DISTRIBUTION="jessie"
 			;;
@@ -87,7 +90,7 @@ then
 fi
 
 case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
-	jessie|stretch|sid)
+	wheezy|jessie|stretch|sid)
 		;;
 	*)
 		Error "Unknown distribution: '${TRAVIS_DEBIAN_DISTRIBUTION}'"
