@@ -23,6 +23,10 @@ Info () {
 	echo "I: ${*}" >&2
 }
 
+Error () {
+	echo "E: ${*}" >&2
+}
+
 ## Configuration ##############################################################
 
 SOURCE="$(dpkg-parsechangelog --show-field Source)"
@@ -81,6 +85,15 @@ then
 			;;
 	esac
 fi
+
+case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
+	jessie|stretch|sid)
+		;;
+	*)
+		Error "Unknown distribution: '${TRAVIS_DEBIAN_DISTRIBUTION}'"
+		exit 2
+		;;
+esac
 
 Info "Using distribution: ${TRAVIS_DEBIAN_DISTRIBUTION}"
 Info "Backports enabled: ${TRAVIS_DEBIAN_BACKPORTS}"
