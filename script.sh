@@ -19,7 +19,7 @@ set -eu
 
 ## Functions ##################################################################
 
-log () {
+Info () {
 	echo "I: ${*}" >&2
 }
 
@@ -27,7 +27,7 @@ log () {
 
 SOURCE="$(dpkg-parsechangelog --show-field Source)"
 
-log "Starting build of ${SOURCE} using travis.debian.net"
+Info "Starting build of ${SOURCE} using travis.debian.net"
 
 TRAVIS_DEBIAN_MIRROR="${TRAVIS_DEBIAN_MIRROR:-http://ftp.de.debian.org/debian}"
 TRAVIS_DEBIAN_BUILD_DIR="${TRAVIS_DEBIAN_BUILD_DIR:-/build}"
@@ -82,13 +82,13 @@ then
 	esac
 fi
 
-log "Using distribution: ${TRAVIS_DEBIAN_DISTRIBUTION}"
-log "Backports enabled: ${TRAVIS_DEBIAN_BACKPORTS}"
-log "Experimental enabled: ${TRAVIS_DEBIAN_EXPERIMENTAL}"
-log "Will build under ${TRAVIS_DEBIAN_BUILD_DIR}"
-log "Will store results under ${TRAVIS_DEBIAN_TARGET_DIR}"
-log "Using mirror ${TRAVIS_DEBIAN_MIRROR}"
-log "Network enabled during build: ${TRAVIS_DEBIAN_NETWORK_ENABLED}"
+Info "Using distribution: ${TRAVIS_DEBIAN_DISTRIBUTION}"
+Info "Backports enabled: ${TRAVIS_DEBIAN_BACKPORTS}"
+Info "Experimental enabled: ${TRAVIS_DEBIAN_EXPERIMENTAL}"
+Info "Will build under ${TRAVIS_DEBIAN_BUILD_DIR}"
+Info "Will store results under ${TRAVIS_DEBIAN_TARGET_DIR}"
+Info "Using mirror ${TRAVIS_DEBIAN_MIRROR}"
+Info "Network enabled during build: ${TRAVIS_DEBIAN_NETWORK_ENABLED}"
 
 ## Build ######################################################################
 
@@ -130,15 +130,15 @@ RUN mkdir -p ${TRAVIS_DEBIAN_BUILD_DIR}
 CMD gbp buildpackage --git-ignore-branch --git-export-dir=${TRAVIS_DEBIAN_BUILD_DIR} --git-builder='debuild -i -I -uc -us -sa'
 EOF
 
-log "Using Dockerfile:"
+Info "Using Dockerfile:"
 sed -e 's@^@  @g' Dockerfile
 
 TAG="travis.debian.net/${SOURCE}"
 
-log "Building Docker image ${TAG}"
+Info "Building Docker image ${TAG}"
 docker build --tag=${TAG} .
 
-log "Removing Dockerfile"
+Info "Removing Dockerfile"
 rm -f Dockerfile
 
 CIDFILE="$(mktemp)"
@@ -150,19 +150,19 @@ then
 	ARGS="${ARGS} --net=none"
 fi
 
-log "Running build"
+Info "Running build"
 docker run --env=DEB_BUILD_OPTIONS="${DEB_BUILD_OPTIONS:-}" ${ARGS} ${TAG}
 
-log "Copying build artefacts to ${TRAVIS_DEBIAN_TARGET_DIR}"
+Info "Copying build artefacts to ${TRAVIS_DEBIAN_TARGET_DIR}"
 mkdir -p "${TRAVIS_DEBIAN_TARGET_DIR}"
 docker cp "$(cat ${CIDFILE}):${TRAVIS_DEBIAN_BUILD_DIR}"/ - \
 	| tar xf - -C "${TRAVIS_DEBIAN_TARGET_DIR}" --strip-components=1
 
-log "Removing container"
+Info "Removing container"
 docker rm "$(cat ${CIDFILE})" >/dev/null
 rm -f "${CIDFILE}"
 
-log "Build successful"
+Info "Build successful"
 sed -e 's@^@  @g' "${TRAVIS_DEBIAN_TARGET_DIR}"/*.changes
 
 #  _                   _          _      _     _                          _
