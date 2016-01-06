@@ -90,7 +90,11 @@ then
 fi
 
 case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
-	wheezy|jessie|stretch|sid)
+	wheezy)
+		TRAVIS_DEBIAN_GIT_BUILDPACKAGE="${TRAVIS_DEBIAN_GIT_BUILDPACKAGE:-git-buildpackage}"
+		;;
+	jessie|stretch|sid)
+		TRAVIS_DEBIAN_GIT_BUILDPACKAGE="${TRAVIS_DEBIAN_GIT_BUILDPACKAGE:-gbp buildpackage}"
 		;;
 	*)
 		Error "Unknown distribution: '${TRAVIS_DEBIAN_DISTRIBUTION}'"
@@ -105,6 +109,7 @@ Info "Will build under ${TRAVIS_DEBIAN_BUILD_DIR}"
 Info "Will store results under ${TRAVIS_DEBIAN_TARGET_DIR}"
 Info "Using mirror ${TRAVIS_DEBIAN_MIRROR}"
 Info "Network enabled during build: ${TRAVIS_DEBIAN_NETWORK_ENABLED}"
+Info "Builder command: ${TRAVIS_DEBIAN_GIT_BUILDPACKAGE}"
 
 ## Build ######################################################################
 
@@ -143,7 +148,7 @@ RUN rm -f Dockerfile
 RUN git checkout .travis.yml || true
 RUN mkdir -p ${TRAVIS_DEBIAN_BUILD_DIR}
 
-CMD gbp buildpackage --git-ignore-branch --git-export-dir=${TRAVIS_DEBIAN_BUILD_DIR} --git-builder='debuild -i -I -uc -us -sa'
+CMD ${TRAVIS_DEBIAN_GIT_BUILDPACKAGE} --git-ignore-branch --git-export-dir=${TRAVIS_DEBIAN_BUILD_DIR} --git-builder='debuild -i -I -uc -us -sa'
 EOF
 
 Info "Using Dockerfile:"
