@@ -8,4 +8,4 @@ script:
 
 branches:
   except:
-    - /^debian\/\d$/
+    - /^debian\/\d/
