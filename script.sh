@@ -157,7 +157,7 @@ sed -e 's@^@  @g' Dockerfile
 TAG="travis.debian.net/${SOURCE}"
 
 Info "Building Docker image ${TAG}"
-docker build --tag=${TAG} .
+docker build --tag=${TAG} --no-cache .
 
 Info "Removing Dockerfile"
 rm -f Dockerfile
