@@ -141,7 +141,18 @@ RUN apt-get install --yes --no-install-recommends build-essential equivs devscri
 
 WORKDIR $(pwd)
 COPY . .
+EOF
 
+if [ "${TRAVIS_DEBIAN_BACKPORTS}" = true ]
+then
+        cat >>Dockerfile <<EOF
+RUN echo "Package: *" >> /etc/apt/preferences.d/travis_debian_net
+RUN echo "Pin: release a=${TRAVIS_DEBIAN_DISTRIBUTION}-backports" >> /etc/apt/preferences.d/travis_debian_net
+RUN echo "Pin-Priority: 500" >> /etc/apt/preferences.d/travis_debian_net
+EOF
+fi
+
+cat >>Dockerfile <<EOF
 RUN env DEBIAN_FRONTEND=noninteractive mk-build-deps --install --remove --tool 'apt-get --no-install-recommends --yes' debian/control
 
 RUN rm -f Dockerfile
