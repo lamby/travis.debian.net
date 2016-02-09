@@ -129,9 +129,7 @@ EOF
 	cat <debian/changelog >>debian/changelog.new
 	mv debian/changelog.new debian/changelog
 	git add debian/changelog
-	git commit \
-		--author="travis.debian.net <nobody@nobody>" \
-		--message="Incrementing version number."
+	git commit -m "Incrementing version number."
 fi
 
 ## Build ######################################################################
