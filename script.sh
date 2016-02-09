@@ -30,6 +30,7 @@ Error () {
 ## Configuration ##############################################################
 
 SOURCE="$(dpkg-parsechangelog --show-field Source)"
+VERSION="$(dpkg-parsechangelog --show-field Version)"
 
 Info "Starting build of ${SOURCE} using travis.debian.net"
 
@@ -37,6 +38,7 @@ TRAVIS_DEBIAN_MIRROR="${TRAVIS_DEBIAN_MIRROR:-http://ftp.de.debian.org/debian}"
 TRAVIS_DEBIAN_BUILD_DIR="${TRAVIS_DEBIAN_BUILD_DIR:-/build}"
 TRAVIS_DEBIAN_TARGET_DIR="${TRAVIS_DEBIAN_TARGET_DIR:-../}"
 TRAVIS_DEBIAN_NETWORK_ENABLED="${TRAVIS_DEBIAN_NETWORK_ENABLED:-false}"
+TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER="${TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER:-false}"
 
 #### Distribution #############################################################
 
@@ -110,6 +112,27 @@ Info "Will store results under ${TRAVIS_DEBIAN_TARGET_DIR}"
 Info "Using mirror ${TRAVIS_DEBIAN_MIRROR}"
 Info "Network enabled during build: ${TRAVIS_DEBIAN_NETWORK_ENABLED}"
 Info "Builder command: ${TRAVIS_DEBIAN_GIT_BUILDPACKAGE}"
+Info "Increment version number: ${TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER}"
+
+## Increment version number ###################################################
+
+if [ "${TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER}" = true ]
+then
+	cat >debian/changelog.new <<EOF
+${SOURCE} (${VERSION}+travis${TRAVIS_BUILD_NUMBER}) UNRELEASED; urgency=medium
+
+  * Automatic build.
+
+ -- travis.debian.net <nobody@nobody>  $(date --utc -R)
+
+EOF
+	cat <debian/changelog >>debian/changelog.new
+	mv debian/changelog.new debian/changelog
+	git add debian/changelog
+	git commit \
+		--author="travis.debian.net <nobody@nobody>" \
+		--message="Incrementing version number."
+fi
 
 ## Build ######################################################################
 

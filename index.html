@@ -166,6 +166,15 @@
         If your build really needs internet access, set this value to
         <tt>true</tt>.
       </dd>
+      <dt>
+        TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER
+      </dt>
+      <dd>
+        When <tt>true</tt>, increment the version number of the package by
+        appending a new entry to <tt>debian/changelog</tt> to reflect the
+        Travis CI build number. By default, the package version is left
+        unchanged.
+      </dd>
     </dl>
 
     <h3 id="faq">
