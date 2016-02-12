@@ -113,6 +113,7 @@ Info "Using mirror: ${TRAVIS_DEBIAN_MIRROR}"
 Info "Network enabled during build: ${TRAVIS_DEBIAN_NETWORK_ENABLED}"
 Info "Builder command: ${TRAVIS_DEBIAN_GIT_BUILDPACKAGE}"
 Info "Increment version number: ${TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER}"
+Info "DEB_BUILD_OPTIONS: ${DEB_BUILD_OPTIONS:-<not set>}"
 
 ## Increment version number ###################################################
 
