@@ -43,6 +43,7 @@ TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER="${TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER
 #### Distribution #############################################################
 
 TRAVIS_DEBIAN_BACKPORTS="${TRAVIS_DEBIAN_BACKPORTS:-false}"
+TRAVIS_DEBIAN_SECURITY_UPDATES="${TRAVIS_DEBIAN_SECURITY_UPDATES:-false}"
 TRAVIS_DEBIAN_EXPERIMENTAL="${TRAVIS_DEBIAN_EXPERIMENTAL:-false}"
 
 if [ "${TRAVIS_DEBIAN_DISTRIBUTION:-}" = "" ]
@@ -146,6 +147,14 @@ then
 	cat >>Dockerfile <<EOF
 RUN echo "deb ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_DISTRIBUTION}-backports main" >> /etc/apt/sources.list
 RUN echo "deb-src ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_DISTRIBUTION}-backports main" >> /etc/apt/sources.list
+EOF
+fi
+
+if [ "${TRAVIS_DEBIAN_SECURITY_UPDATES}" = true ]
+then
+	cat >>Dockerfile <<EOF
+RUN echo "deb http://security.debian.org/ ${TRAVIS_DEBIAN_DISTRIBUTION}/updates main" >> /etc/apt/sources.list
+RUN echo "deb-src http://security.debian.org/ ${TRAVIS_DEBIAN_DISTRIBUTION}/updates main" >> /etc/apt/sources.list
 EOF
 fi
 
