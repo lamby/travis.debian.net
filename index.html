@@ -55,8 +55,12 @@
         <a href="https://honk.sigxcpu.org/piki/projects/git-buildpackage/">git-buildpackage</a>
         branches:
 
-        <pre>$ wget -O.travis.yml <a href="http://travis.debian.net/travis.yml">http://travis.debian.net/travis.yml</a></pre>
-        <pre>$ echo 'extend-diff-ignore = "^\.travis\.yml$"' &gt;&gt; <br>      debian/source/options # for "3.0 (quilt)" packages</pre>
+        <pre>$ wget -O.travis.yml <a href="http://travis.debian.net/travis.yml">http://travis.debian.net/travis.yml</a>
+$ git add .travis.yml
+$ git commit -m "Add .travis.yml from http://travis.debian.net."</pre>
+
+        For "3.0 (quilt)" packages:
+        <pre>$ echo 'extend-diff-ignore = "^\.travis\.yml$"' &gt;&gt; <br>      debian/source/options</pre>
       </li>
       <li>
         If you are using <a href="https://github.com/">GitHub</a>, your
