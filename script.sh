@@ -1,4 +1,16 @@
 #!/bin/sh
+
+#  _                   _          _      _     _                          _
+# | |_ _ __ __ ___   _(_)___   __| | ___| |__ (_) __ _ _ __    _ __   ___| |_
+# | __| '__/ _` \ \ / / / __| / _` |/ _ \ '_ \| |/ _` | '_ \  | '_ \ / _ \ __|
+# | |_| | | (_| |\ V /| \__ \| (_| |  __/ |_) | | (_| | | | |_| | | |  __/ |_
+#  \__|_|  \__,_| \_/ |_|___(_)__,_|\___|_.__/|_|\__,_|_| |_(_)_| |_|\___|\__|
+#
+#
+#               Documentation: <http://travis.debian.net>
+
+
+## Copyright ##################################################################
 #
 # Copyright © 2015, 2016 Chris Lamb <lamby@debian.org>
 #
@@ -15,9 +27,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-set -eu
-
 ## Functions ##################################################################
+
+set -eu
 
 Info () {
 	echo "I: ${*}" >&2
