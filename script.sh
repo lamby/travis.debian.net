@@ -210,6 +210,7 @@ RUN env DEBIAN_FRONTEND=noninteractive mk-build-deps --install --remove --tool '
 RUN rm -f Dockerfile
 RUN git checkout .travis.yml || true
 RUN mkdir -p ${TRAVIS_DEBIAN_BUILD_DIR}
+RUN for X in \$(git branch -r | grep -v HEAD); do git branch --track \$(echo "\${X}" | sed -e 's@.*/@@g') \${X} || true
 
 CMD ${TRAVIS_DEBIAN_GIT_BUILDPACKAGE} --git-ignore-branch --git-export-dir=${TRAVIS_DEBIAN_BUILD_DIR} --git-builder='debuild -i -I -uc -us -sa'
 EOF
