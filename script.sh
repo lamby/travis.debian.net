@@ -125,6 +125,17 @@ case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
 		;;
 esac
 
+## Detect autopkgtest tests ###################################################
+
+if [ -e "debian/tests/control" ]
+then
+	TRAVIS_DEBIAN_AUTOPKGTEST="${TRAVIS_DEBIAN_AUTOPKGTEST:-true}"
+else
+	TRAVIS_DEBIAN_AUTOPKGTEST="${TRAVIS_DEBIAN_AUTOPKGTEST:-false}"
+fi
+
+## Print configuration ########################################################
+
 Info "Using distribution: ${TRAVIS_DEBIAN_DISTRIBUTION}"
 Info "Backports enabled: ${TRAVIS_DEBIAN_BACKPORTS}"
 Info "Experimental enabled: ${TRAVIS_DEBIAN_EXPERIMENTAL}"
@@ -135,6 +146,7 @@ Info "Using mirror: ${TRAVIS_DEBIAN_MIRROR}"
 Info "Network enabled during build: ${TRAVIS_DEBIAN_NETWORK_ENABLED}"
 Info "Builder command: ${TRAVIS_DEBIAN_GIT_BUILDPACKAGE}"
 Info "Increment version number: ${TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER}"
+Info "Run autopkgtests after build: ${TRAVIS_DEBIAN_AUTOPKGTEST}"
 Info "DEB_BUILD_OPTIONS: ${DEB_BUILD_OPTIONS:-<not set>}"
 
 ## Increment version number ###################################################
@@ -245,6 +257,17 @@ Info "Copying build artefacts to ${TRAVIS_DEBIAN_TARGET_DIR}"
 mkdir -p "${TRAVIS_DEBIAN_TARGET_DIR}"
 docker cp "$(cat ${CIDFILE}):${TRAVIS_DEBIAN_BUILD_DIR}"/ - \
 	| tar xf - -C "${TRAVIS_DEBIAN_TARGET_DIR}" --strip-components=1
+
+if [ "${TRAVIS_DEBIAN_AUTOPKGTEST}" = "true" ]
+then
+	docker run --cidfile=${CIDFILE} --interactive ${TAG} /bin/sh - <<EOF
+set -eu
+
+apt-get install --yes --no-install-recommends autopkgtest
+
+autopkgtest ${TRAVIS_DEBIAN_BUILD_DIR}/*.changes -- null
+EOF
+fi
 
 Info "Removing container"
 docker rm "$(cat ${CIDFILE})" >/dev/null
