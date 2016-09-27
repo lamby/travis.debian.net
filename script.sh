@@ -136,7 +136,7 @@ esac
 
 ## Detect autopkgtest tests ###################################################
 
-if [ -e "debian/tests/control" ]
+if [ -e "debian/tests/control" ] || grep -E '^(XS-)?Testsuite: autopkgtest' debian/control
 then
 	TRAVIS_DEBIAN_AUTOPKGTEST="${TRAVIS_DEBIAN_AUTOPKGTEST:-true}"
 else
@@ -272,7 +272,7 @@ then
 	docker run --volume "$(readlink -f "${TRAVIS_DEBIAN_TARGET_DIR}"):${TRAVIS_DEBIAN_BUILD_DIR}" --interactive ${TAG} /bin/sh - <<EOF
 set -eu
 
-apt-get install --yes --no-install-recommends autopkgtest
+apt-get install --yes --no-install-recommends autopkgtest autodep8
 
 ${TRAVIS_DEBIAN_AUTOPKGTEST_RUN} ${TRAVIS_DEBIAN_BUILD_DIR}/*.changes ${TRAVIS_DEBIAN_AUTOPKGTEST_SEPARATOR} null
 EOF
