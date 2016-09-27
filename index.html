@@ -180,7 +180,8 @@ $ git commit -m "Add .travis.yml from http://travis.debian.net."</pre>
       <dd>
         When <tt>true</tt>, run <tt>autopkgtest</tt> tests after a successful
         build. By default, tests are attempted if a
-        <tt>debian/tests/control</tt> file exists.
+        <tt>debian/tests/control</tt> file exists or <tt>debian/control</tt>
+        has the <tt>Testsuite: autopkgtest</tt> header.
       </dd>
       <dt>
         TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER
