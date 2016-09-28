@@ -7,7 +7,7 @@
   <link rel="stylesheet" type="text/css" href="media/style.css?v=2" media="screen">
 
   <title>
-    travis.debian.net &mdash; Easily build and test your Debian packaging on travis-ci.org
+    travis.debian.net &mdash; Easily build and test your Debian packaging on travis-ci.org &amp; GitHub
   </title>
 </head>
 
@@ -18,7 +18,7 @@
 <header>
   <div class="container">
     <h1>travis.debian.net</h1>
-    <h2>Easily build and test your Debian packaging on travis-ci.org</h2>
+    <h2>Easily build and test your Debian packaging on travis-ci.org &amp; GitHub</h2>
   </div>
 </header>
 
@@ -29,11 +29,23 @@
     </h3>
 
     <p>
-      <tt>travis.debian.net</tt> is a hosted utility to make it easier and
-      cleaner to build and test your Debian packages on the
-      <a href="https://travis-ci.org">Travis CI</a> hosted continuous
-      integration platform without duplicating scripts or configuration across
-      multiple repositories.
+      <tt>travis.debian.net</tt> is a hosted service for projects that host
+      their Debian packaging on <a href="https://github.com/">GitHub</a> to use
+      the <a href="https://travis-ci.org">Travis CI</a> continuous integration
+      service to test builds on every update. Amongst many other advantages,
+      this helps catch issues as early as possible.
+    </p>
+
+    <p>
+      Whilst possible without <tt>travis.debian.net</tt>, using this service
+      not only avoids unwieldy duplication of configuration, it works around
+      backwards-compatibility issues in supporting tools in older Debian
+      releases.
+    </p>
+
+    <p>
+      <tt>travis.debian.net</tt> additionally supports running
+      <em>autopkgtest</em> tests and disabling network access during builds.
     </p>
 
     <h3 id="quick-setup">
@@ -72,8 +84,8 @@ $ git commit -m "Add .travis.yml from http://travis.debian.net."</pre>
     </h3>
 
     <p>
-      At it's core <tt>travis.debian.net</tt> is a hosted shell script that is
-      executed within the Travis CI test environment.
+      At it's core <tt>travis.debian.net</tt> is a hosted POSIX shell script
+      that is executed within the Travis CI test environment.
     </p>
 
     <p>
