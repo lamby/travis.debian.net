@@ -167,6 +167,23 @@ $ git commit -m "Add .travis.yml from http://travis.debian.net."</pre>
         Which Debian mirror to use. By default, <tt>ftp.de.debian.org</tt> is used.
       </dd>
       <dt>
+        TRAVIS_DEBIAN_EXTRA_REPOSITORY
+      </dt>
+      <dd>
+        If the package has some dependencies not found in Debian, you can add
+        your own repository to the build using this variable. The format is
+        the same as <tt>/etc/apt/sources.list</tt>, for example
+        <tt>"https://my.repo.net/debian/ stretch main"</tt>.
+      </dd>
+      <dt>
+        TRAVIS_DEBIAN_EXTRA_REPOSITORY_GPG_URL
+      </dt>
+      <dd>
+        Location of the public key of the extra repository defined in
+        <tt>TRAVIS_DEBIAN_EXTRA_REPOSITORY</tt>, so that its packages can be
+        authenticated.
+      </dd>
+      <dt>
         TRAVIS_DEBIAN_TARGET_DIR
       </dt>
       <dd>

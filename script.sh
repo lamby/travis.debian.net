@@ -149,6 +149,8 @@ Info "Using distribution: ${TRAVIS_DEBIAN_DISTRIBUTION}"
 Info "Backports enabled: ${TRAVIS_DEBIAN_BACKPORTS}"
 Info "Experimental enabled: ${TRAVIS_DEBIAN_EXPERIMENTAL}"
 Info "Security updates enabled: ${TRAVIS_DEBIAN_SECURITY_UPDATES}"
+Info "Will use extra repository: ${TRAVIS_DEBIAN_EXTRA_REPOSITORY:-<not set>}"
+Info "Extra repository's key URL: ${TRAVIS_DEBIAN_EXTRA_REPOSITORY_GPG_URL:-<not set>}"
 Info "Will build under: ${TRAVIS_DEBIAN_BUILD_DIR}"
 Info "Will store results under: ${TRAVIS_DEBIAN_TARGET_DIR}"
 Info "Using mirror: ${TRAVIS_DEBIAN_MIRROR}"
@@ -208,13 +210,44 @@ RUN echo "deb-src ${TRAVIS_DEBIAN_MIRROR} experimental main" >> /etc/apt/sources
 EOF
 fi
 
+EXTRA_PACKAGES=""
+
+case "${TRAVIS_DEBIAN_EXTRA_REPOSITORY}" in
+	https:*)
+		EXTRA_PACKAGES="${EXTRA_PACKAGES} apt-transport-https"
+		;;
+esac
+
+if [ -n "${TRAVIS_DEBIAN_EXTRA_REPOSITORY_GPG_URL}" ]
+then
+	EXTRA_PACKAGES="${EXTRA_PACKAGES} wget gnupg"
+fi
+
 cat >>Dockerfile <<EOF
 RUN apt-get update && apt-get dist-upgrade --yes
-RUN apt-get install --yes --no-install-recommends build-essential equivs devscripts git-buildpackage ca-certificates pristine-tar
+RUN apt-get install --yes --no-install-recommends build-essential equivs devscripts git-buildpackage ca-certificates pristine-tar ${EXTRA_PACKAGES}
 
 WORKDIR $(pwd)
 COPY . .
 EOF
+
+if [ -n "${TRAVIS_DEBIAN_EXTRA_REPOSITORY_GPG_URL}" ]
+then
+	cat >>Dockerfile <<EOF
+RUN wget -O- "${TRAVIS_DEBIAN_EXTRA_REPOSITORY_GPG_URL}" | apt-key add -
+EOF
+fi
+
+# We're adding the extra repository only after the essential tools have been
+# installed, so that we have apt-transport-https if the repository needs it.
+if [ -n "${TRAVIS_DEBIAN_EXTRA_REPOSITORY}" ]
+then
+	cat >>Dockerfile <<EOF
+RUN echo "deb ${TRAVIS_DEBIAN_EXTRA_REPOSITORY}" >> /etc/apt/sources.list
+RUN echo "deb-src ${TRAVIS_DEBIAN_EXTRA_REPOSITORY}" >> /etc/apt/sources.list
+RUN apt-get update
+EOF
+fi
 
 if [ "${TRAVIS_DEBIAN_BACKPORTS}" = true ]
 then
