@@ -249,7 +249,7 @@ RUN apt-get update
 EOF
 fi
 
-if [ "${TRAVIS_DEBIAN_BACKPORTS}" = true ]
+if [ "${TRAVIS_DEBIAN_BACKPORTS}" = "true" ]
 then
         cat >>Dockerfile <<EOF
 RUN echo "Package: *" >> /etc/apt/preferences.d/travis_debian_net
