@@ -212,13 +212,13 @@ fi
 
 EXTRA_PACKAGES=""
 
-case "${TRAVIS_DEBIAN_EXTRA_REPOSITORY}" in
+case "${TRAVIS_DEBIAN_EXTRA_REPOSITORY:-}" in
 	https:*)
 		EXTRA_PACKAGES="${EXTRA_PACKAGES} apt-transport-https"
 		;;
 esac
 
-if [ -n "${TRAVIS_DEBIAN_EXTRA_REPOSITORY_GPG_URL}" ]
+if [ "${TRAVIS_DEBIAN_EXTRA_REPOSITORY_GPG_URL:-}" != "" ]
 then
 	EXTRA_PACKAGES="${EXTRA_PACKAGES} wget gnupg"
 fi
@@ -231,7 +231,7 @@ WORKDIR $(pwd)
 COPY . .
 EOF
 
-if [ -n "${TRAVIS_DEBIAN_EXTRA_REPOSITORY_GPG_URL}" ]
+if [ "${TRAVIS_DEBIAN_EXTRA_REPOSITORY_GPG_URL:-}" != "" ]
 then
 	cat >>Dockerfile <<EOF
 RUN wget -O- "${TRAVIS_DEBIAN_EXTRA_REPOSITORY_GPG_URL}" | apt-key add -
@@ -240,7 +240,7 @@ fi
 
 # We're adding the extra repository only after the essential tools have been
 # installed, so that we have apt-transport-https if the repository needs it.
-if [ -n "${TRAVIS_DEBIAN_EXTRA_REPOSITORY}" ]
+if [ "${TRAVIS_DEBIAN_EXTRA_REPOSITORY:-}" != "" ]
 then
 	cat >>Dockerfile <<EOF
 RUN echo "deb ${TRAVIS_DEBIAN_EXTRA_REPOSITORY}" >> /etc/apt/sources.list
