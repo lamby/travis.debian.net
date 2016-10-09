@@ -41,8 +41,8 @@ Error () {
 
 ## Configuration ##############################################################
 
-SOURCE="$(dpkg-parsechangelog --show-field Source)"
-VERSION="$(dpkg-parsechangelog --show-field Version)"
+SOURCE="$(dpkg-parsechangelog | awk '/^Source:/ { print $2 }')"
+VERSION="$(dpkg-parsechangelog | awk '/^Version:/ { print $2 }')"
 
 Info "Starting build of ${SOURCE} using travis.debian.net"
 
