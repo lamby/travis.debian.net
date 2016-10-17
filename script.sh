@@ -106,9 +106,11 @@ fi
 case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
 	wheezy)
 		TRAVIS_DEBIAN_GIT_BUILDPACKAGE="${TRAVIS_DEBIAN_GIT_BUILDPACKAGE:-git-buildpackage}"
+		TRAVIS_DEBIAN_GIT_BUILDPACKAGE_OPTIONS="${TRAVIS_DEBIAN_GIT_BUILDPACKAGE_OPTIONS:-}"
 		;;
 	*)
 		TRAVIS_DEBIAN_GIT_BUILDPACKAGE="${TRAVIS_DEBIAN_GIT_BUILDPACKAGE:-gbp buildpackage}"
+		TRAVIS_DEBIAN_GIT_BUILDPACKAGE_OPTIONS="${TRAVIS_DEBIAN_GIT_BUILDPACKAGE_OPTIONS:---git-submodules}"
 		;;
 esac
 
@@ -154,6 +156,7 @@ Info "Will store results under: ${TRAVIS_DEBIAN_TARGET_DIR}"
 Info "Using mirror: ${TRAVIS_DEBIAN_MIRROR}"
 Info "Network enabled during build: ${TRAVIS_DEBIAN_NETWORK_ENABLED}"
 Info "Builder command: ${TRAVIS_DEBIAN_GIT_BUILDPACKAGE}"
+Info "Builder command options: ${TRAVIS_DEBIAN_GIT_BUILDPACKAGE_OPTIONS}"
 Info "Increment version number: ${TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER}"
 Info "Run autopkgtests after build: ${TRAVIS_DEBIAN_AUTOPKGTEST}"
 Info "DEB_BUILD_OPTIONS: ${DEB_BUILD_OPTIONS:-<not set>}"
@@ -267,7 +270,7 @@ RUN git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
 RUN git fetch
 RUN for X in \$(git branch -r | grep -v HEAD); do git branch --track \$(echo "\${X}" | sed -e 's@.*/@@g') \${X} || true; done
 
-CMD ${TRAVIS_DEBIAN_GIT_BUILDPACKAGE} --git-ignore-branch --git-export-dir=${TRAVIS_DEBIAN_BUILD_DIR} --git-builder='debuild -i -I -uc -us -sa'
+CMD ${TRAVIS_DEBIAN_GIT_BUILDPACKAGE} ${TRAVIS_DEBIAN_GIT_BUILDPACKAGE_OPTIONS} --git-ignore-branch --git-export-dir=${TRAVIS_DEBIAN_BUILD_DIR} --git-builder='debuild -i -I -uc -us -sa'
 EOF
 
 Info "Using Dockerfile:"
