@@ -284,9 +284,8 @@ docker build --tag=${TAG} .
 Info "Removing Dockerfile"
 rm -f Dockerfile
 
-CIDFILE="$(mktemp)"
+CIDFILE="$(mktemp --dry-run)"
 ARGS="--cidfile=${CIDFILE}"
-rm -f ${CIDFILE} # Cannot exist
 
 if [ "${TRAVIS_DEBIAN_NETWORK_ENABLED}" != "true" ]
 then
