@@ -81,27 +81,27 @@ then
 			TRAVIS_DEBIAN_DISTRIBUTION="${TRAVIS_DEBIAN_DISTRIBUTION##backports/}"
 			;;
 	esac
-
-	# Detect codenames
-	case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
-		oldstable)
-			TRAVIS_DEBIAN_DISTRIBUTION="wheezy"
-			;;
-		stable)
-			TRAVIS_DEBIAN_DISTRIBUTION="jessie"
-			;;
-		testing)
-			TRAVIS_DEBIAN_DISTRIBUTION="stretch"
-			;;
-		unstable|master)
-			TRAVIS_DEBIAN_DISTRIBUTION="sid"
-			;;
-		experimental)
-			TRAVIS_DEBIAN_DISTRIBUTION="sid"
-			TRAVIS_DEBIAN_EXPERIMENTAL="true"
-			;;
-	esac
 fi
+
+# Detect codenames
+case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
+	oldstable)
+		TRAVIS_DEBIAN_DISTRIBUTION="wheezy"
+		;;
+	stable)
+		TRAVIS_DEBIAN_DISTRIBUTION="jessie"
+		;;
+	testing)
+		TRAVIS_DEBIAN_DISTRIBUTION="stretch"
+		;;
+	unstable|master)
+		TRAVIS_DEBIAN_DISTRIBUTION="sid"
+		;;
+	experimental)
+		TRAVIS_DEBIAN_DISTRIBUTION="sid"
+		TRAVIS_DEBIAN_EXPERIMENTAL="true"
+		;;
+esac
 
 case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
 	wheezy)
