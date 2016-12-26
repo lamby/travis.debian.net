@@ -305,6 +305,11 @@ then
 	docker run --volume "$(readlink -f "${TRAVIS_DEBIAN_TARGET_DIR}"):${TRAVIS_DEBIAN_BUILD_DIR}" --interactive ${TAG} /bin/sh - <<EOF
 set -eu
 
+cat <<EOS >/usr/sbin/policy-rc.d
+#!/bin/sh
+exit 0
+EOS
+chmod a+x /usr/sbin/policy-rc.d
 apt-get install --yes --no-install-recommends autopkgtest autodep8
 
 ${TRAVIS_DEBIAN_AUTOPKGTEST_RUN} ${TRAVIS_DEBIAN_BUILD_DIR}/*.changes ${TRAVIS_DEBIAN_AUTOPKGTEST_SEPARATOR} null
