@@ -312,7 +312,13 @@ EOS
 chmod a+x /usr/sbin/policy-rc.d
 apt-get install --yes --no-install-recommends autopkgtest autodep8
 
-${TRAVIS_DEBIAN_AUTOPKGTEST_RUN} ${TRAVIS_DEBIAN_BUILD_DIR}/*.changes ${TRAVIS_DEBIAN_AUTOPKGTEST_SEPARATOR} null
+TEST_RET="0"
+${TRAVIS_DEBIAN_AUTOPKGTEST_RUN} ${TRAVIS_DEBIAN_BUILD_DIR}/*.changes ${TRAVIS_DEBIAN_AUTOPKGTEST_SEPARATOR} null || TEST_RET="${?}"
+if [ "${TEST_RET}" != "0" ] && [ "${TEST_RET}" != "2" ]
+then
+	echo "${TRAVIS_DEBIAN_AUTOPKGTEST_RUN} exited ${TEST_RET}" >&2
+	exit ${TEST_RET}
+fi
 EOF
 fi
 
