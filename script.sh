@@ -279,7 +279,7 @@ sed -e 's@^@  @g' Dockerfile
 TAG="travis.debian.net/${SOURCE}"
 
 Info "Building Docker image ${TAG}"
-docker build --tag=${TAG} .
+docker build --tag="${TAG}" .
 
 Info "Removing Dockerfile"
 rm -f Dockerfile
@@ -293,16 +293,17 @@ then
 fi
 
 Info "Running build"
-docker run --env=DEB_BUILD_OPTIONS="${DEB_BUILD_OPTIONS:-}" ${ARGS} ${TAG}
+# shellcheck disable=SC2086
+docker run --env=DEB_BUILD_OPTIONS="${DEB_BUILD_OPTIONS:-}" ${ARGS} "${TAG}"
 
 Info "Copying build artefacts to ${TRAVIS_DEBIAN_TARGET_DIR}"
 mkdir -p "${TRAVIS_DEBIAN_TARGET_DIR}"
-docker cp "$(cat ${CIDFILE}):${TRAVIS_DEBIAN_BUILD_DIR}"/ - \
+docker cp "$(cat "${CIDFILE}")":"${TRAVIS_DEBIAN_BUILD_DIR}"/ - \
 	| tar xf - -C "${TRAVIS_DEBIAN_TARGET_DIR}" --strip-components=1
 
 if [ "${TRAVIS_DEBIAN_AUTOPKGTEST}" = "true" ]
 then
-	docker run --volume "$(readlink -f "${TRAVIS_DEBIAN_TARGET_DIR}"):${TRAVIS_DEBIAN_BUILD_DIR}" --interactive ${TAG} /bin/sh - <<EOF
+	docker run --volume "$(readlink -f "${TRAVIS_DEBIAN_TARGET_DIR}"):${TRAVIS_DEBIAN_BUILD_DIR}" --interactive "${TAG}" /bin/sh - <<EOF
 set -eu
 
 cat <<EOS >/usr/sbin/policy-rc.d
@@ -317,7 +318,7 @@ EOF
 fi
 
 Info "Removing container"
-docker rm "$(cat ${CIDFILE})" >/dev/null
+docker rm "$(cat "${CIDFILE}")" >/dev/null
 rm -f "${CIDFILE}"
 
 Info "Build successful"
