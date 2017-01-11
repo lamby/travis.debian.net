@@ -303,6 +303,8 @@ docker cp "$(cat "${CIDFILE}")":"${TRAVIS_DEBIAN_BUILD_DIR}"/ - \
 
 if [ "${TRAVIS_DEBIAN_AUTOPKGTEST}" = "true" ]
 then
+	Info "Running autopkgtests"
+
 	docker run --volume "$(readlink -f "${TRAVIS_DEBIAN_TARGET_DIR}"):${TRAVIS_DEBIAN_BUILD_DIR}" --interactive "${TAG}" /bin/sh - <<EOF
 set -eu
 
