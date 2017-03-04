@@ -80,7 +80,7 @@ then
 			TRAVIS_DEBIAN_BACKPORTS="true"
 			TRAVIS_DEBIAN_DISTRIBUTION="${TRAVIS_DEBIAN_DISTRIBUTION##backports/}"
 			;;
-		*_bpo7+*)
+		*_bpo7+*|*_bpo70+*)
 			TRAVIS_DEBIAN_BACKPORTS="true"
 			TRAVIS_DEBIAN_DISTRIBUTION="wheezy"
 			;;
