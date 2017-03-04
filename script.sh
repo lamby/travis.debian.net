@@ -80,6 +80,18 @@ then
 			TRAVIS_DEBIAN_BACKPORTS="true"
 			TRAVIS_DEBIAN_DISTRIBUTION="${TRAVIS_DEBIAN_DISTRIBUTION##backports/}"
 			;;
+		*_bpo7+*)
+			TRAVIS_DEBIAN_BACKPORTS="true"
+			TRAVIS_DEBIAN_DISTRIBUTION="wheezy"
+			;;
+		*_bpo8+*)
+			TRAVIS_DEBIAN_BACKPORTS="true"
+			TRAVIS_DEBIAN_DISTRIBUTION="jessie"
+			;;
+		*_bpo9+*)
+			TRAVIS_DEBIAN_BACKPORTS="true"
+			TRAVIS_DEBIAN_DISTRIBUTION="stretch"
+			;;
 	esac
 fi
 
