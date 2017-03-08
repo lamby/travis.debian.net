@@ -236,6 +236,15 @@ then
 	TRAVIS_DEBIAN_EXTRA_PACKAGES="${TRAVIS_DEBIAN_EXTRA_PACKAGES} wget gnupg"
 fi
 
+if [ "${TRAVIS_DEBIAN_BACKPORTS}" = "true" ]
+then
+        cat >>Dockerfile <<EOF
+RUN echo "Package: *" >> /etc/apt/preferences.d/travis_debian_net
+RUN echo "Pin: release a=${TRAVIS_DEBIAN_DISTRIBUTION}-backports" >> /etc/apt/preferences.d/travis_debian_net
+RUN echo "Pin-Priority: 500" >> /etc/apt/preferences.d/travis_debian_net
+EOF
+fi
+
 cat >>Dockerfile <<EOF
 RUN apt-get update && apt-get dist-upgrade --yes
 RUN apt-get install --yes --no-install-recommends build-essential equivs devscripts git-buildpackage ca-certificates pristine-tar lintian ${TRAVIS_DEBIAN_EXTRA_PACKAGES}
@@ -259,15 +268,6 @@ then
 RUN echo "deb ${TRAVIS_DEBIAN_EXTRA_REPOSITORY}" >> /etc/apt/sources.list
 RUN echo "deb-src ${TRAVIS_DEBIAN_EXTRA_REPOSITORY}" >> /etc/apt/sources.list
 RUN apt-get update
-EOF
-fi
-
-if [ "${TRAVIS_DEBIAN_BACKPORTS}" = "true" ]
-then
-        cat >>Dockerfile <<EOF
-RUN echo "Package: *" >> /etc/apt/preferences.d/travis_debian_net
-RUN echo "Pin: release a=${TRAVIS_DEBIAN_DISTRIBUTION}-backports" >> /etc/apt/preferences.d/travis_debian_net
-RUN echo "Pin-Priority: 500" >> /etc/apt/preferences.d/travis_debian_net
 EOF
 fi
 
