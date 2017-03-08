@@ -223,22 +223,22 @@ RUN echo "deb-src ${TRAVIS_DEBIAN_MIRROR} experimental main" >> /etc/apt/sources
 EOF
 fi
 
-EXTRA_PACKAGES=""
+TRAVIS_DEBIAN_EXTRA_PACKAGES=""
 
 case "${TRAVIS_DEBIAN_EXTRA_REPOSITORY:-}" in
 	https:*)
-		EXTRA_PACKAGES="${EXTRA_PACKAGES} apt-transport-https"
+		TRAVIS_DEBIAN_EXTRA_PACKAGES="${TRAVIS_DEBIAN_EXTRA_PACKAGES} apt-transport-https"
 		;;
 esac
 
 if [ "${TRAVIS_DEBIAN_EXTRA_REPOSITORY_GPG_URL:-}" != "" ]
 then
-	EXTRA_PACKAGES="${EXTRA_PACKAGES} wget gnupg"
+	TRAVIS_DEBIAN_EXTRA_PACKAGES="${TRAVIS_DEBIAN_EXTRA_PACKAGES} wget gnupg"
 fi
 
 cat >>Dockerfile <<EOF
 RUN apt-get update && apt-get dist-upgrade --yes
-RUN apt-get install --yes --no-install-recommends build-essential equivs devscripts git-buildpackage ca-certificates pristine-tar lintian ${EXTRA_PACKAGES}
+RUN apt-get install --yes --no-install-recommends build-essential equivs devscripts git-buildpackage ca-certificates pristine-tar lintian ${TRAVIS_DEBIAN_EXTRA_PACKAGES}
 
 WORKDIR $(pwd)
 COPY . .
