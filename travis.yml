@@ -10,3 +10,4 @@ script:
 branches:
   except:
     - /^debian\/\d/
+    - /^upstream\//
