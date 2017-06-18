@@ -92,19 +92,26 @@ then
 			TRAVIS_DEBIAN_BACKPORTS="true"
 			TRAVIS_DEBIAN_DISTRIBUTION="stretch"
 			;;
+		*_bpo10+*)
+			TRAVIS_DEBIAN_BACKPORTS="true"
+			TRAVIS_DEBIAN_DISTRIBUTION="buster"
+			;;
 	esac
 fi
 
 # Detect codenames
 case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
-	oldstable)
+	oldoldstable)
 		TRAVIS_DEBIAN_DISTRIBUTION="wheezy"
 		;;
-	stable)
+	oldstable)
 		TRAVIS_DEBIAN_DISTRIBUTION="jessie"
 		;;
-	testing)
+	stable)
 		TRAVIS_DEBIAN_DISTRIBUTION="stretch"
+		;;
+	testing)
+		TRAVIS_DEBIAN_DISTRIBUTION="buster"
 		;;
 	unstable|master)
 		TRAVIS_DEBIAN_DISTRIBUTION="sid"
