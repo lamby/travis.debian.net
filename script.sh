@@ -324,7 +324,7 @@ if [ "${TRAVIS_DEBIAN_AUTOPKGTEST}" = "true" ]
 then
 	Info "Running autopkgtests"
 
-	docker run --volume "$(readlink -f "${TRAVIS_DEBIAN_TARGET_DIR}"):${TRAVIS_DEBIAN_BUILD_DIR}" --interactive "${TAG}" /bin/sh - <<EOF
+	docker run --env TRAVIS=true --volume "$(readlink -f "${TRAVIS_DEBIAN_TARGET_DIR}"):${TRAVIS_DEBIAN_BUILD_DIR}" --interactive "${TAG}" /bin/sh - <<EOF
 set -eu
 
 cat <<EOS >/usr/sbin/policy-rc.d
