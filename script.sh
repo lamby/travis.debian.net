@@ -44,6 +44,12 @@ Error () {
 SOURCE="$(dpkg-parsechangelog | awk '/^Source:/ { print $2 }')"
 VERSION="$(dpkg-parsechangelog | awk '/^Version:/ { print $2 }')"
 
+if [ "${SOURCE}" = "" ] || [ "${VERSION}" = "" ]
+then
+	Error "Could not determine source and version from debian/changelog"
+	exit 2
+fi
+
 Info "Starting build of ${SOURCE} using travis.debian.net"
 
 TRAVIS_DEBIAN_MIRROR="${TRAVIS_DEBIAN_MIRROR:-http://deb.debian.org/debian}"
