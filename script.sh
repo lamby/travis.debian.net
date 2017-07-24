@@ -198,7 +198,13 @@ ${SOURCE} (${VERSION}+travis${TRAVIS_BUILD_NUMBER}) UNRELEASED; urgency=medium
  -- travis.debian.net <nobody@nobody>  $(date --utc -R)
 
 EOF
-	cat <debian/changelog >>debian/changelog.new
+	# Don't rely on debian/changelog existing so we can use
+	# TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER to create an initial
+	# changelog.
+	if [ -f debian/changelog ]
+	then
+		cat <debian/changelog >>debian/changelog.new
+	fi
 	mv debian/changelog.new debian/changelog
 	git add debian/changelog
 	git commit -m "Incrementing version number."

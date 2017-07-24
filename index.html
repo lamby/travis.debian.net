@@ -220,7 +220,8 @@ $ git commit -m "Add .travis.yml from http://travis.debian.net."</pre>
         When <tt>true</tt>, increment the version number of the package by
         appending a new entry to <tt>debian/changelog</tt> to reflect the
         Travis CI build number. By default, the package version is left
-        unchanged.
+        unchanged. If no <tt>debian/changelog</tt> file exists, enabling this
+        option creates one.
       </dd>
     </dl>
 
