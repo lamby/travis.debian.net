@@ -188,7 +188,7 @@ Info "DEB_BUILD_OPTIONS: ${DEB_BUILD_OPTIONS:-<not set>}"
 
 ## Increment version number ###################################################
 
-if [ "${TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER}" = true ]
+if [ "${TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER}" = true ] || [ ! -f debian/changelog ]
 then
 	cat >debian/changelog.new <<EOF
 ${SOURCE} (${VERSION}+travis${TRAVIS_BUILD_NUMBER}) UNRELEASED; urgency=medium
@@ -198,13 +198,9 @@ ${SOURCE} (${VERSION}+travis${TRAVIS_BUILD_NUMBER}) UNRELEASED; urgency=medium
  -- travis.debian.net <nobody@nobody>  $(date --utc -R)
 
 EOF
-	# Don't rely on debian/changelog existing so we can use
-	# TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER to create an initial
-	# changelog.
-	if [ -f debian/changelog ]
-	then
-		cat <debian/changelog >>debian/changelog.new
-	fi
+	# Don't rely on debian/changelog existing
+	touch debian/changelog
+	cat <debian/changelog >>debian/changelog.new
 	mv debian/changelog.new debian/changelog
 	git add debian/changelog
 	git commit -m "Incrementing version number."
