@@ -41,12 +41,19 @@ Error () {
 
 ## Configuration ##############################################################
 
-SOURCE="$(dpkg-parsechangelog | awk '/^Source:/ { print $2 }')"
-VERSION="$(dpkg-parsechangelog | awk '/^Version:/ { print $2 }')"
+if [ -f debian/changelog ]
+then
+	SOURCE="$(dpkg-parsechangelog | awk '/^Source:/ { print $2 }')"
+	VERSION="$(dpkg-parsechangelog | awk '/^Version:/ { print $2 }')"
+else
+	# Fallback to parsing debian/control if debian/changelog does not exist
+	SOURCE="$(awk '/^Source:/ { print $2 }' debian/control)"
+	VERSION="0"
+fi
 
 if [ "${SOURCE}" = "" ] || [ "${VERSION}" = "" ]
 then
-	Error "Could not determine source and version from debian/changelog"
+	Error "Could not determine source and version from packaging"
 	exit 2
 fi
 
