@@ -105,7 +105,7 @@ then
 	esac
 fi
 
-# Detect/replace codenames
+# Detect/rewrite codenames
 case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
 	oldoldstable)
 		TRAVIS_DEBIAN_DISTRIBUTION="wheezy"
