@@ -209,7 +209,8 @@ EOF
 	touch debian/changelog
 	cat <debian/changelog >>debian/changelog.new
 	mv debian/changelog.new debian/changelog
-	git add debian/changelog
+	# Force addition of changelog despite .gitignore
+	git add -f debian/changelog
 	git commit -m "Incrementing version number."
 fi
 
