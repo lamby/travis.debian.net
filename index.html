@@ -174,7 +174,9 @@ $ git commit -m "Add .travis.yml from http://travis.debian.net."</pre>
         If the package has some dependencies not found in Debian, you can add
         your own repository to the build using this variable. The format is
         the same as <tt>/etc/apt/sources.list</tt>, for example
-        <tt>"https://my.repo.net/debian/ stretch main"</tt>.
+        <tt>"https://my.repo.net/debian/ stretch main"</tt>. Note that the
+        double-quotes are required to ensure Travis correctly exports the
+        variable.
       </dd>
       <dt>
         TRAVIS_DEBIAN_EXTRA_REPOSITORY_GPG_URL
