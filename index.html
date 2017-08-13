@@ -72,9 +72,12 @@
 $ git add .travis.yml
 $ git commit -m "Add .travis.yml from http://travis.debian.net."</pre>
       </li>
-
       <li>
-        For "3.0 (quilt)" packages:
+        If there already exists a <tt>.travis.yml</tt> file, simply override
+        it; ensuring that subsequent upstream merges retain the
+        <tt>travis.debian.net</tt> version. Additionally for "3.0 (quilt)"
+        packages, you will need to:
+
         <pre>$ echo 'extend-diff-ignore = "^\.travis\.yml$"' &gt;&gt; <br>      debian/source/options</pre>
       </li>
       <li>
