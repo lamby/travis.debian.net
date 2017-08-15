@@ -59,7 +59,7 @@ fi
 
 Info "Starting build of ${SOURCE} using travis.debian.net"
 
-TRAVIS_DEBIAN_MIRROR="${TRAVIS_DEBIAN_MIRROR:-http://deb.debian.org/debian}"
+TRAVIS_DEBIAN_MIRROR="${TRAVIS_DEBIAN_MIRROR:-http://cdn-fastly.deb.debian.org/debian}"
 TRAVIS_DEBIAN_BUILD_DIR="${TRAVIS_DEBIAN_BUILD_DIR:-/build}"
 TRAVIS_DEBIAN_TARGET_DIR="${TRAVIS_DEBIAN_TARGET_DIR:-../}"
 TRAVIS_DEBIAN_NETWORK_ENABLED="${TRAVIS_DEBIAN_NETWORK_ENABLED:-false}"
