@@ -78,7 +78,10 @@ $ git commit -m "Add .travis.yml from http://travis.debian.net."</pre>
         <tt>travis.debian.net</tt> version. Additionally for "3.0 (quilt)"
         packages, you will need to:
 
-        <pre>$ echo 'extend-diff-ignore = "^\.travis\.yml$"' &gt;&gt; <br>      debian/source/options</pre>
+        <pre>$ echo 'extend-diff-ignore = "^\.travis\.yml$"' &gt;&gt; debian/source/options
+$ git add debian/source/options
+$ git commit -m "Add /.travis.yml to extend-diff-ignore in debian/source/options."</pre>
+</pre>
       </li>
       <li>
         You should now be able to build your package:
