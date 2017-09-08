@@ -168,7 +168,7 @@ esac
 
 ## Detect autopkgtest tests ###################################################
 
-if [ -e "debian/tests/control" ] || grep -E '^(XS-)?Testsuite: autopkgtest' debian/control
+if [ -e "debian/tests/control" ] || grep -qs -E '^(XS-)?Testsuite: autopkgtest' debian/control
 then
 	TRAVIS_DEBIAN_AUTOPKGTEST="${TRAVIS_DEBIAN_AUTOPKGTEST:-true}"
 else
