@@ -192,6 +192,7 @@ Info "Builder command options: ${TRAVIS_DEBIAN_GIT_BUILDPACKAGE_OPTIONS}"
 Info "Increment version number: ${TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER}"
 Info "Run autopkgtests after build: ${TRAVIS_DEBIAN_AUTOPKGTEST}"
 Info "DEB_BUILD_OPTIONS: ${DEB_BUILD_OPTIONS:-<not set>}"
+Info "DEB_BUILD_PROFILES: ${DEB_BUILD_PROFILES:-<not set>}"
 
 ## Increment version number ###################################################
 
@@ -330,7 +331,7 @@ fi
 
 Info "Running build"
 # shellcheck disable=SC2086
-docker run --env=DEB_BUILD_OPTIONS="${DEB_BUILD_OPTIONS:-}" ${ARGS} "${TAG}"
+docker run --env=DEB_BUILD_OPTIONS="${DEB_BUILD_OPTIONS:-}" --env=DEB_BUILD_PROFILES="${DEB_BUILD_PROFILES:-}" ${ARGS} "${TAG}"
 
 Info "Copying build artefacts to ${TRAVIS_DEBIAN_TARGET_DIR}"
 mkdir -p "${TRAVIS_DEBIAN_TARGET_DIR}"
