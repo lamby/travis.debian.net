@@ -297,7 +297,7 @@ EOF
 fi
 
 cat >>Dockerfile <<EOF
-RUN env DEBIAN_FRONTEND=noninteractive mk-build-deps --install --remove --tool 'apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control
+RUN env DEBIAN_FRONTEND=noninteractive DEB_BUILD_PROFILES="${DEB_BUILD_PROFILES:-}" mk-build-deps --install --remove --tool 'apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control
 
 RUN rm -f Dockerfile
 RUN git checkout .travis.yml || true
