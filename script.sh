@@ -275,24 +275,24 @@ RUN apt-get update && apt-get dist-upgrade --yes
 EOF
 
 # Take a slight diversion to make a minimal environment for autopkgtests
-cp Dockerfile Dockerfile.minimal
-cat >>Dockerfile.minimal <<EOF
+cp Dockerfile Dockerfile.autopkgtests
+cat >>Dockerfile.autopkgtests <<EOF
 WORKDIR $(pwd)
 COPY . .
 
-RUN rm -f Dockerfile Dockerfile.minimal
+RUN rm -f Dockerfile Dockerfile.autopkgtests
 RUN mkdir -p ${TRAVIS_DEBIAN_BUILD_DIR}
 EOF
 
 Info "Using Dockerfile:"
-sed -e 's@^@  @g' Dockerfile.minimal
+sed -e 's@^@  @g' Dockerfile.autopkgtests
 
 TAG="travis.debian.net/${SOURCE}"
 
-Info "Building Docker image ${TAG}.minimal"
-docker build --tag="${TAG}.minimal" --file Dockerfile.minimal .
+Info "Building Docker image ${TAG}.autopkgtests"
+docker build --tag="${TAG}.autopkgtests" --file Dockerfile.autopkgtests .
 
-rm -f Dockerfile.minimal
+rm -f Dockerfile.autopkgtests
 
 cat >>Dockerfile <<EOF
 RUN apt-get install --yes --no-install-recommends build-essential equivs devscripts git-buildpackage ca-certificates pristine-tar lintian ${TRAVIS_DEBIAN_EXTRA_PACKAGES}
@@ -363,7 +363,7 @@ if [ "${TRAVIS_DEBIAN_AUTOPKGTEST}" = "true" ]
 then
 	Info "Running autopkgtests"
 
-	docker run --env TRAVIS=true --volume "$(readlink -f "${TRAVIS_DEBIAN_TARGET_DIR}"):${TRAVIS_DEBIAN_BUILD_DIR}" --interactive "${TAG}.minimal" /bin/sh - <<EOF
+	docker run --env TRAVIS=true --volume "$(readlink -f "${TRAVIS_DEBIAN_TARGET_DIR}"):${TRAVIS_DEBIAN_BUILD_DIR}" --interactive "${TAG}.autopkgtests" /bin/sh - <<EOF
 set -eu
 
 cat <<EOS >/usr/sbin/policy-rc.d
