@@ -39,6 +39,10 @@ Error () {
 	echo "E: ${*}" >&2
 }
 
+Indent () {
+	sed -e 's@^@  @g' "${@}"
+}
+
 ## Configuration ##############################################################
 
 if [ -f debian/changelog ]
@@ -286,7 +290,7 @@ RUN mkdir -p ${TRAVIS_DEBIAN_BUILD_DIR}
 EOF
 
 Info "Using Dockerfile:"
-sed -e 's@^@  @g' Dockerfile.autopkgtests
+Indent Dockerfile.autopkgtests
 
 TAG="travis.debian.net/${SOURCE}"
 
@@ -335,7 +339,7 @@ CMD ${TRAVIS_DEBIAN_GIT_BUILDPACKAGE} ${TRAVIS_DEBIAN_GIT_BUILDPACKAGE_OPTIONS} 
 EOF
 
 Info "Using Dockerfile:"
-sed -e 's@^@  @g' Dockerfile
+Indent Dockerfile
 
 Info "Building Docker image ${TAG}"
 docker build --tag="${TAG}" .
@@ -386,12 +390,12 @@ docker cp "$(cat "${CIDFILE}")":"${TRAVIS_DEBIAN_BUILD_DIR}"/ - \
 
 Info "Build successful"
 docker start "$(cat "${CIDFILE}")" >/dev/null
-sed -e 's@^@  @g' "${TRAVIS_DEBIAN_TARGET_DIR}"/*.changes
+Indent "${TRAVIS_DEBIAN_TARGET_DIR}"/*.changes
 if ls "${TRAVIS_DEBIAN_TARGET_DIR}"/*.buildinfo >/dev/null 2>&1
 then
-	sed -e 's@^@  @g' "${TRAVIS_DEBIAN_TARGET_DIR}"/*.buildinfo
+	Indent "${TRAVIS_DEBIAN_TARGET_DIR}"/*.buildinfo
 fi
-docker exec "$(cat "${CIDFILE}")" /bin/sh -c "debc ${TRAVIS_DEBIAN_BUILD_DIR}/*.changes" | sed -e 's@^@  @g'
+docker exec "$(cat "${CIDFILE}")" /bin/sh -c "debc ${TRAVIS_DEBIAN_BUILD_DIR}/*.changes" | Indent
 
 Info "Removing container"
 docker rm -f "$(cat "${CIDFILE}")" >/dev/null
