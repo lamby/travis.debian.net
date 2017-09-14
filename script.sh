@@ -389,12 +389,18 @@ EOF
 fi
 
 Info "Build successful"
+
+Info "$(basename "${TRAVIS_DEBIAN_TARGET_DIR}"/*.changes)"
 docker start "$(cat "${CIDFILE}")" >/dev/null
 Indent "${TRAVIS_DEBIAN_TARGET_DIR}"/*.changes
+
 if ls "${TRAVIS_DEBIAN_TARGET_DIR}"/*.buildinfo >/dev/null 2>&1
 then
+	Info "$(basename "${TRAVIS_DEBIAN_TARGET_DIR}"/*.buildinfo)"
 	Indent "${TRAVIS_DEBIAN_TARGET_DIR}"/*.buildinfo
 fi
+
+Info "dch"
 docker exec "$(cat "${CIDFILE}")" /bin/sh -c "debc ${TRAVIS_DEBIAN_BUILD_DIR}/*.changes" | Indent
 
 Info "Removing container"
