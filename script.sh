@@ -387,6 +387,10 @@ docker cp "$(cat "${CIDFILE}")":"${TRAVIS_DEBIAN_BUILD_DIR}"/ - \
 Info "Build successful"
 docker start "$(cat "${CIDFILE}")" >/dev/null
 sed -e 's@^@  @g' "${TRAVIS_DEBIAN_TARGET_DIR}"/*.changes
+if ls "${TRAVIS_DEBIAN_TARGET_DIR}"/*.buildinfo >/dev/null 2>&1
+then
+	sed -e 's@^@  @g' "${TRAVIS_DEBIAN_TARGET_DIR}"/*.buildinfo
+fi
 docker exec "$(cat "${CIDFILE}")" /bin/sh -c "debc ${TRAVIS_DEBIAN_BUILD_DIR}/*.changes" | sed -e 's@^@  @g'
 
 Info "Removing container"
