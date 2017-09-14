@@ -384,12 +384,14 @@ fi
 EOF
 fi
 
-Info "Removing container"
-docker rm "$(cat "${CIDFILE}")" >/dev/null
-rm -f "${CIDFILE}"
-
 Info "Build successful"
+docker start "$(cat "${CIDFILE}")" >/dev/null
 sed -e 's@^@  @g' "${TRAVIS_DEBIAN_TARGET_DIR}"/*.changes
+docker exec "$(cat "${CIDFILE}")" /bin/sh -c "debc ${TRAVIS_DEBIAN_BUILD_DIR}/*.changes" | sed -e 's@^@  @g'
+
+Info "Removing container"
+docker rm -f "$(cat "${CIDFILE}")" >/dev/null
+rm -f "${CIDFILE}"
 
 #  _                   _          _      _     _                          _
 # | |_ _ __ __ ___   _(_)___   __| | ___| |__ (_) __ _ _ __    _ __   ___| |_
