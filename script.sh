@@ -71,7 +71,7 @@ TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER="${TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER
 
 #### Distribution #############################################################
 
-TRAVIS_DEBIAN_BACKPORTS="${TRAVIS_DEBIAN_BACKPORTS:-false}"
+TRAVIS_DEBIAN_BACKPORTS="${TRAVIS_DEBIAN_BACKPORTS:-}"
 TRAVIS_DEBIAN_EXPERIMENTAL="${TRAVIS_DEBIAN_EXPERIMENTAL:-false}"
 
 if [ "${TRAVIS_DEBIAN_DISTRIBUTION:-}" = "" ]
@@ -90,27 +90,27 @@ then
 	# Detect backports
 	case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
 		*-backports)
-			TRAVIS_DEBIAN_BACKPORTS="true"
+			TRAVIS_DEBIAN_BACKPORTS="${TRAVIS_DEBIAN_DISTRIBUTION}"
 			TRAVIS_DEBIAN_DISTRIBUTION="${TRAVIS_DEBIAN_DISTRIBUTION%%-backports}"
 			;;
 		backports/*)
-			TRAVIS_DEBIAN_BACKPORTS="true"
+			TRAVIS_DEBIAN_BACKPORTS="${TRAVIS_DEBIAN_DISTRIBUTION##backports/}-backports"
 			TRAVIS_DEBIAN_DISTRIBUTION="${TRAVIS_DEBIAN_DISTRIBUTION##backports/}"
 			;;
 		*_bpo7+*|*_bpo70+*)
-			TRAVIS_DEBIAN_BACKPORTS="true"
+			TRAVIS_DEBIAN_BACKPORTS="wheezy-backports"
 			TRAVIS_DEBIAN_DISTRIBUTION="wheezy"
 			;;
 		*_bpo8+*)
-			TRAVIS_DEBIAN_BACKPORTS="true"
+			TRAVIS_DEBIAN_BACKPORTS="jessie-backports"
 			TRAVIS_DEBIAN_DISTRIBUTION="jessie"
 			;;
 		*_bpo9+*)
-			TRAVIS_DEBIAN_BACKPORTS="true"
+			TRAVIS_DEBIAN_BACKPORTS="stretch-backports"
 			TRAVIS_DEBIAN_DISTRIBUTION="stretch"
 			;;
 		*_bpo10+*)
-			TRAVIS_DEBIAN_BACKPORTS="true"
+			TRAVIS_DEBIAN_BACKPORTS="buster-backports"
 			TRAVIS_DEBIAN_DISTRIBUTION="buster"
 			;;
 	esac
@@ -182,7 +182,7 @@ fi
 ## Print configuration ########################################################
 
 Info "Using distribution: ${TRAVIS_DEBIAN_DISTRIBUTION}"
-Info "Backports enabled: ${TRAVIS_DEBIAN_BACKPORTS}"
+Info "Backports enabled: ${TRAVIS_DEBIAN_BACKPORTS:-<none>}"
 Info "Experimental enabled: ${TRAVIS_DEBIAN_EXPERIMENTAL}"
 Info "Security updates enabled: ${TRAVIS_DEBIAN_SECURITY_UPDATES}"
 Info "Will use extra repository: ${TRAVIS_DEBIAN_EXTRA_REPOSITORY:-<not set>}"
@@ -227,11 +227,11 @@ RUN echo "deb ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_DISTRIBUTION} main" > /etc
 RUN echo "deb-src ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_DISTRIBUTION} main" >> /etc/apt/sources.list
 EOF
 
-if [ "${TRAVIS_DEBIAN_BACKPORTS}" = true ]
+if [ "${TRAVIS_DEBIAN_BACKPORTS}" != "" ]
 then
 	cat >>Dockerfile <<EOF
-RUN echo "deb ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_DISTRIBUTION}-backports main" >> /etc/apt/sources.list
-RUN echo "deb-src ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_DISTRIBUTION}-backports main" >> /etc/apt/sources.list
+RUN echo "deb ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_BACKPORTS} main" >> /etc/apt/sources.list
+RUN echo "deb-src ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_BACKPORTS} main" >> /etc/apt/sources.list
 EOF
 fi
 
@@ -264,11 +264,11 @@ then
 	TRAVIS_DEBIAN_EXTRA_PACKAGES="${TRAVIS_DEBIAN_EXTRA_PACKAGES} wget gnupg"
 fi
 
-if [ "${TRAVIS_DEBIAN_BACKPORTS}" = "true" ]
+if [ "${TRAVIS_DEBIAN_BACKPORTS}" != "" ]
 then
         cat >>Dockerfile <<EOF
 RUN echo "Package: *" >> /etc/apt/preferences.d/travis_debian_net
-RUN echo "Pin: release a=${TRAVIS_DEBIAN_DISTRIBUTION}-backports" >> /etc/apt/preferences.d/travis_debian_net
+RUN echo "Pin: release a=${TRAVIS_DEBIAN_BACKPORTS}" >> /etc/apt/preferences.d/travis_debian_net
 RUN echo "Pin-Priority: 500" >> /etc/apt/preferences.d/travis_debian_net
 EOF
 fi
