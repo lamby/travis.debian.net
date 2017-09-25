@@ -71,7 +71,7 @@ TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER="${TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER
 
 #### Distribution #############################################################
 
-TRAVIS_DEBIAN_BACKPORTS="${TRAVIS_DEBIAN_BACKPORTS:-}"
+TRAVIS_DEBIAN_BACKPORTS="${TRAVIS_DEBIAN_BACKPORTS:-}" # list
 TRAVIS_DEBIAN_EXPERIMENTAL="${TRAVIS_DEBIAN_EXPERIMENTAL:-false}"
 
 if [ "${TRAVIS_DEBIAN_DISTRIBUTION:-}" = "" ]
@@ -94,16 +94,16 @@ then
 			TRAVIS_DEBIAN_DISTRIBUTION="${TRAVIS_DEBIAN_DISTRIBUTION%%-backports}"
 			;;
 		*-backports-sloppy)
-			TRAVIS_DEBIAN_BACKPORTS="${TRAVIS_DEBIAN_DISTRIBUTION}"
 			TRAVIS_DEBIAN_DISTRIBUTION="${TRAVIS_DEBIAN_DISTRIBUTION%%-backports-sloppy}"
+			TRAVIS_DEBIAN_BACKPORTS="${TRAVIS_DEBIAN_DISTRIBUTION}-backports ${TRAVIS_DEBIAN_DISTRIBUTION}-backports-sloppy"
 			;;
 		backports/*)
 			TRAVIS_DEBIAN_BACKPORTS="${TRAVIS_DEBIAN_DISTRIBUTION##backports/}-backports"
 			TRAVIS_DEBIAN_DISTRIBUTION="${TRAVIS_DEBIAN_DISTRIBUTION##backports/}"
 			;;
 		backports-sloppy/*)
-			TRAVIS_DEBIAN_BACKPORTS="${TRAVIS_DEBIAN_DISTRIBUTION##backports-sloppy/}-backports-sloppy"
 			TRAVIS_DEBIAN_DISTRIBUTION="${TRAVIS_DEBIAN_DISTRIBUTION##backports-sloppy/}"
+			TRAVIS_DEBIAN_BACKPORTS="${TRAVIS_DEBIAN_DISTRIBUTION}-backports ${TRAVIS_DEBIAN_DISTRIBUTION}-backports-sloppy"
 			;;
 		*_bpo7+*|*_bpo70+*)
 			TRAVIS_DEBIAN_BACKPORTS="wheezy-backports"
@@ -235,13 +235,13 @@ RUN echo "deb ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_DISTRIBUTION} main" > /etc
 RUN echo "deb-src ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_DISTRIBUTION} main" >> /etc/apt/sources.list
 EOF
 
-if [ "${TRAVIS_DEBIAN_BACKPORTS}" != "" ]
-then
-	cat >>Dockerfile <<EOF
-RUN echo "deb ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_BACKPORTS} main" >> /etc/apt/sources.list
-RUN echo "deb-src ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_BACKPORTS} main" >> /etc/apt/sources.list
+for X in $(echo "${TRAVIS_DEBIAN_BACKPORTS}")
+do
+		cat >>Dockerfile <<EOF
+RUN echo "deb ${TRAVIS_DEBIAN_MIRROR} ${X} main" >> /etc/apt/sources.list
+RUN echo "deb-src ${TRAVIS_DEBIAN_MIRROR} ${X} main" >> /etc/apt/sources.list
 EOF
-fi
+done
 
 if [ "${TRAVIS_DEBIAN_SECURITY_UPDATES}" = true ]
 then
@@ -272,14 +272,14 @@ then
 	TRAVIS_DEBIAN_EXTRA_PACKAGES="${TRAVIS_DEBIAN_EXTRA_PACKAGES} wget gnupg"
 fi
 
-if [ "${TRAVIS_DEBIAN_BACKPORTS}" != "" ]
-then
+for X in $(echo "${TRAVIS_DEBIAN_BACKPORTS}")
+do
         cat >>Dockerfile <<EOF
 RUN echo "Package: *" >> /etc/apt/preferences.d/travis_debian_net
-RUN echo "Pin: release a=${TRAVIS_DEBIAN_BACKPORTS}" >> /etc/apt/preferences.d/travis_debian_net
+RUN echo "Pin: release a=${X}" >> /etc/apt/preferences.d/travis_debian_net
 RUN echo "Pin-Priority: 500" >> /etc/apt/preferences.d/travis_debian_net
 EOF
-fi
+done
 
 cat >>Dockerfile <<EOF
 RUN echo force-unsafe-io > /etc/dpkg/dpkg.cfg.d/force-unsafe-io
