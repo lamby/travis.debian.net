@@ -158,9 +158,10 @@ $ git commit -m "Add /.travis.yml to extend-diff-ignore in debian/source/options
         TRAVIS_DEBIAN_BACKPORTS
       </dt>
       <dd>
-        When <tt>true</tt>, the corresponding backports repository will be enabled in
+        The corresponding backports repositories will be enabled in
         /etc/apt/sources.list. If <tt>TRAVIS_DEBIAN_DISTRIBUTION</tt> is not
-        set, the value is automatically detected.
+        set, the value is automatically detected. Multiple repositories can be
+        specified delimited by spaces.
       </dd>
       <dt>
         TRAVIS_DEBIAN_SECURITY_UPDATES
