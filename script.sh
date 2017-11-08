@@ -227,6 +227,16 @@ EOF
 	git commit -m "Incrementing version number."
 fi
 
+## Git setup #################################################################
+
+git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
+git fetch
+
+for X in $(git branch -r | grep -v HEAD)
+do
+	git branch --track $(echo "${X}" | sed -e 's@.*/@@g') ${X} || true
+done
+
 ## Build ######################################################################
 
 cat >Dockerfile <<EOF
@@ -308,7 +318,7 @@ docker build --tag="${TAG}.autopkgtests" --file Dockerfile.autopkgtests .
 rm -f Dockerfile.autopkgtests
 
 cat >>Dockerfile <<EOF
-RUN apt-get install --yes --no-install-recommends build-essential equivs devscripts git-buildpackage ca-certificates pristine-tar lintian openssh-client ${TRAVIS_DEBIAN_EXTRA_PACKAGES}
+RUN apt-get install --yes --no-install-recommends build-essential equivs devscripts git-buildpackage ca-certificates pristine-tar lintian
 
 WORKDIR $(pwd)
 COPY . .
@@ -338,10 +348,6 @@ RUN env DEBIAN_FRONTEND=noninteractive DEB_BUILD_PROFILES="${DEB_BUILD_PROFILES:
 RUN rm -f Dockerfile
 RUN git checkout .travis.yml || true
 RUN mkdir -p ${TRAVIS_DEBIAN_BUILD_DIR}
-
-RUN git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
-RUN git fetch
-RUN for X in \$(git branch -r | grep -v HEAD); do git branch --track \$(echo "\${X}" | sed -e 's@.*/@@g') \${X} || true; done
 
 CMD ${TRAVIS_DEBIAN_GIT_BUILDPACKAGE} ${TRAVIS_DEBIAN_GIT_BUILDPACKAGE_OPTIONS} --git-ignore-branch --git-export-dir=${TRAVIS_DEBIAN_BUILD_DIR} -uc -us -sa
 EOF
