@@ -414,7 +414,7 @@ then
 	Indent "${TRAVIS_DEBIAN_TARGET_DIR}"/*.buildinfo
 fi
 
-Info "dch"
+Info "debc"
 docker exec "$(cat "${CIDFILE}")" /bin/sh -c "debc ${TRAVIS_DEBIAN_BUILD_DIR}/*.changes" | Indent
 
 Info "Removing container"
