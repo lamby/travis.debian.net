@@ -215,7 +215,7 @@ ${SOURCE} (${VERSION}+travis${TRAVIS_BUILD_NUMBER}) UNRELEASED; urgency=medium
 
   * Automatic build.
 
- -- travis.debian.net <nobody@nobody>  $(date --utc -R)
+ -- travis.debian.net <nobody@nobody.example>  $(date --utc -R)
 
 EOF
 	# Don't rely on debian/changelog existing
