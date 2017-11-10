@@ -265,6 +265,12 @@ $ git commit -m "Add /.travis.yml to extend-diff-ignore in debian/source/options
         don't care about, there is zero expectation that the resulting
         <tt>.deb</tt> files are to be used or installed anywhere.
       </dd>
+      <dt>
+        Q: How do I disable <a href="https://lintian.debian.org">Lintian</a>?
+      </dt>
+      <dd>
+        A: Export <tt>TRAVIS_DEBIAN_GIT_BUILDPACKAGE_OPTIONS="--git-builder='debuild --no-lintian"'</tt>.
+      </dd>
     </dl>
 
     <h3 id="links">
