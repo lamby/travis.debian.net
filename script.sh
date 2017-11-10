@@ -318,7 +318,7 @@ docker build --tag="${TAG}.autopkgtests" --file Dockerfile.autopkgtests .
 rm -f Dockerfile.autopkgtests
 
 cat >>Dockerfile <<EOF
-RUN apt-get install --yes --no-install-recommends build-essential equivs devscripts git-buildpackage ca-certificates pristine-tar lintian
+RUN apt-get install --yes --no-install-recommends build-essential equivs devscripts git-buildpackage ca-certificates pristine-tar lintian ${TRAVIS_DEBIAN_EXTRA_PACKAGES}
 
 WORKDIR $(pwd)
 COPY . .
