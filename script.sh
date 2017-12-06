@@ -147,6 +147,8 @@ case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
 		;;
 esac
 
+# TRAVIS_DEBIAN_DISTRIBUTION is now set, so set dependent options
+
 case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
 	wheezy)
 		TRAVIS_DEBIAN_GIT_BUILDPACKAGE="${TRAVIS_DEBIAN_GIT_BUILDPACKAGE:-git-buildpackage}"
