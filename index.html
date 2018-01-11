@@ -160,6 +160,15 @@ $ git commit -m "Add /.travis.yml to extend-diff-ignore in debian/source/options
         default, this is automatically detected from the branch name.
       </dd>
       <dt>
+        TRAVIS_DEBIAN_COMPONENTS
+      </dt>
+      <dd>
+        Additional archive components used for building and testing this
+        package.
+        The components are set in sources.list and should be space-separated.
+        By default, this is set to <tt>main</tt>.
+      </dd>
+      <dt>
         TRAVIS_DEBIAN_BACKPORTS
       </dt>
       <dd>
