@@ -71,6 +71,7 @@ TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER="${TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER
 
 #### Distribution #############################################################
 
+TRAVIS_DEBIAN_DERIVATIVE="${TRAVIS_DEBIAN_DERIVATIVE:-debian}"
 TRAVIS_DEBIAN_BACKPORTS="${TRAVIS_DEBIAN_BACKPORTS:-}" # list
 TRAVIS_DEBIAN_EXPERIMENTAL="${TRAVIS_DEBIAN_EXPERIMENTAL:-false}"
 
@@ -191,6 +192,7 @@ fi
 
 ## Print configuration ########################################################
 
+Info "Using: ${TRAVIS_DEBIAN_DERIVATIVE}"
 Info "Using distribution: ${TRAVIS_DEBIAN_DISTRIBUTION}"
 Info "Backports enabled: ${TRAVIS_DEBIAN_BACKPORTS:-<none>}"
 Info "Experimental enabled: ${TRAVIS_DEBIAN_EXPERIMENTAL}"
@@ -242,7 +244,7 @@ done
 ## Build ######################################################################
 
 cat >Dockerfile <<EOF
-FROM debian:${TRAVIS_DEBIAN_DISTRIBUTION}
+FROM ${TRAVIS_DEBIAN_DERIVATIVE}:${TRAVIS_DEBIAN_DISTRIBUTION}
 RUN echo "deb ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_DISTRIBUTION} main" > /etc/apt/sources.list
 RUN echo "deb-src ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_DISTRIBUTION} main" >> /etc/apt/sources.list
 EOF

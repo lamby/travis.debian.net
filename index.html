@@ -153,6 +153,18 @@ $ git commit -m "Add /.travis.yml to extend-diff-ignore in debian/source/options
         <a href="https://wiki.debian.org/BuildProfileSpec">as described in the Build Profile spec</a>.
       </dd>
       <dt>
+        TRAVIS_DEBIAN_DERIVATIVE
+      </dt>
+      <dd>
+        Which Debian derivative to use, like "ubuntu". This will use
+        the corresponding TRAVIS_DEBIAN_DERIVATIVE:DISTRIBUTION Docker
+        container as a base.
+        You probably need to adjust TRAVIS_DEBIAN_MIRROR to target your
+        derivative archive as well.
+        Not that not all features like backports, autopkgtests or security
+        updates may be working, depending on your derivative.
+      </dd>
+      <dt>
         TRAVIS_DEBIAN_DISTRIBUTION
       </dt>
       <dd>
