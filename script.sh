@@ -72,6 +72,7 @@ TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER="${TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER
 #### Distribution #############################################################
 
 TRAVIS_DEBIAN_DERIVATIVE="${TRAVIS_DEBIAN_DERIVATIVE:-debian}"
+TRAVIS_DEBIAN_POCKETS="${TRAVIS_DEBIAN_POCKETS:-main}"
 TRAVIS_DEBIAN_BACKPORTS="${TRAVIS_DEBIAN_BACKPORTS:-}" # list
 TRAVIS_DEBIAN_EXPERIMENTAL="${TRAVIS_DEBIAN_EXPERIMENTAL:-false}"
 
@@ -194,6 +195,7 @@ fi
 
 Info "Using: ${TRAVIS_DEBIAN_DERIVATIVE}"
 Info "Using distribution: ${TRAVIS_DEBIAN_DISTRIBUTION}"
+Info "With pockets: ${TRAVIS_DEBIAN_POCKETS}"
 Info "Backports enabled: ${TRAVIS_DEBIAN_BACKPORTS:-<none>}"
 Info "Experimental enabled: ${TRAVIS_DEBIAN_EXPERIMENTAL}"
 Info "Security updates enabled: ${TRAVIS_DEBIAN_SECURITY_UPDATES}"
@@ -245,31 +247,31 @@ done
 
 cat >Dockerfile <<EOF
 FROM ${TRAVIS_DEBIAN_DERIVATIVE}:${TRAVIS_DEBIAN_DISTRIBUTION}
-RUN echo "deb ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_DISTRIBUTION} main" > /etc/apt/sources.list
-RUN echo "deb-src ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_DISTRIBUTION} main" >> /etc/apt/sources.list
+RUN echo "deb ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_DISTRIBUTION} ${TRAVIS_DEBIAN_POCKETS}" > /etc/apt/sources.list
+RUN echo "deb-src ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_DISTRIBUTION} ${TRAVIS_DEBIAN_POCKETS}" >> /etc/apt/sources.list
 EOF
 
 for X in $(echo "${TRAVIS_DEBIAN_BACKPORTS}")
 do
 	cat >>Dockerfile <<EOF
-RUN echo "deb ${TRAVIS_DEBIAN_MIRROR} ${X} main" >> /etc/apt/sources.list
-RUN echo "deb-src ${TRAVIS_DEBIAN_MIRROR} ${X} main" >> /etc/apt/sources.list
+RUN echo "deb ${TRAVIS_DEBIAN_MIRROR} ${X} ${TRAVIS_DEBIAN_POCKETS}" >> /etc/apt/sources.list
+RUN echo "deb-src ${TRAVIS_DEBIAN_MIRROR} ${X} ${TRAVIS_DEBIAN_POCKETS}" >> /etc/apt/sources.list
 EOF
 done
 
 if [ "${TRAVIS_DEBIAN_SECURITY_UPDATES}" = true ]
 then
 	cat >>Dockerfile <<EOF
-RUN echo "deb http://security.debian.org/ ${TRAVIS_DEBIAN_DISTRIBUTION}/updates main" >> /etc/apt/sources.list
-RUN echo "deb-src http://security.debian.org/ ${TRAVIS_DEBIAN_DISTRIBUTION}/updates main" >> /etc/apt/sources.list
+RUN echo "deb http://security.debian.org/ ${TRAVIS_DEBIAN_DISTRIBUTION}/updates ${TRAVIS_DEBIAN_POCKETS}" >> /etc/apt/sources.list
+RUN echo "deb-src http://security.debian.org/ ${TRAVIS_DEBIAN_DISTRIBUTION}/updates ${TRAVIS_DEBIAN_POCKETS}" >> /etc/apt/sources.list
 EOF
 fi
 
 if [ "${TRAVIS_DEBIAN_EXPERIMENTAL}" = true ]
 then
 	cat >>Dockerfile <<EOF
-RUN echo "deb ${TRAVIS_DEBIAN_MIRROR} experimental main" >> /etc/apt/sources.list
-RUN echo "deb-src ${TRAVIS_DEBIAN_MIRROR} experimental main" >> /etc/apt/sources.list
+RUN echo "deb ${TRAVIS_DEBIAN_MIRROR} experimental ${TRAVIS_DEBIAN_POCKETS}" >> /etc/apt/sources.list
+RUN echo "deb-src ${TRAVIS_DEBIAN_MIRROR} experimental ${TRAVIS_DEBIAN_POCKETS}" >> /etc/apt/sources.list
 EOF
 fi
 
