@@ -63,7 +63,6 @@ fi
 
 Info "Starting build of ${SOURCE} using travis.debian.net"
 
-TRAVIS_DEBIAN_MIRROR="${TRAVIS_DEBIAN_MIRROR:-http://deb.debian.org/debian}"
 TRAVIS_DEBIAN_BUILD_DIR="${TRAVIS_DEBIAN_BUILD_DIR:-/build}"
 TRAVIS_DEBIAN_TARGET_DIR="${TRAVIS_DEBIAN_TARGET_DIR:-../}"
 TRAVIS_DEBIAN_NETWORK_ENABLED="${TRAVIS_DEBIAN_NETWORK_ENABLED:-false}"
@@ -71,7 +70,6 @@ TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER="${TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER
 
 #### Distribution #############################################################
 
-TRAVIS_DEBIAN_COMPONENTS="${TRAVIS_DEBIAN_COMPONENTS:-main}"
 TRAVIS_DEBIAN_BACKPORTS="${TRAVIS_DEBIAN_BACKPORTS:-}" # list
 TRAVIS_DEBIAN_EXPERIMENTAL="${TRAVIS_DEBIAN_EXPERIMENTAL:-false}"
 
@@ -148,7 +146,20 @@ case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
 		;;
 esac
 
-# TRAVIS_DEBIAN_DISTRIBUTION is now set, so set dependent options
+# detect derivatives
+if [ "${TRAVIS_DEBIAN_DERIVATIVE:-}" = "" ]
+then
+	case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
+		precise*|trusty*|xenial*|zesty*|artful*|bionic*)
+			TRAVIS_DEBIAN_DERIVATIVE="ubuntu"
+			;;
+		*)
+			TRAVIS_DEBIAN_DERIVATIVE="debian"
+			;;
+	esac
+fi
+
+# TRAVIS_DEBIAN_DISTRIBUTION and TRAVIS_DEBIAN_DERIVATIVE are now set, so set dependent options
 
 case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
 	wheezy)
@@ -181,6 +192,44 @@ case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
 		;;
 esac
 
+# Common options specific to derivatives
+case "${TRAVIS_DEBIAN_DERIVATIVE}" in
+	ubuntu)
+		# Strip component/pocket suffix
+		for suffix in proposed updates security
+		do
+			TRAVIS_DEBIAN_DISTRIBUTION="${TRAVIS_DEBIAN_DISTRIBUTION%%-$suffix}"
+		done
+		# Disable debian security repo, it's an ubuntu pocket
+		TRAVIS_DEBIAN_SECURITY_UPDATES="false"
+		;;
+esac
+
+if [ "${TRAVIS_DEBIAN_MIRROR:-}" = "" ]
+then
+	case "${TRAVIS_DEBIAN_DERIVATIVE}" in
+		ubuntu)
+			TRAVIS_DEBIAN_MIRROR="http://archive.ubuntu.com/ubuntu"
+			;;
+		*)
+			TRAVIS_DEBIAN_MIRROR="http://deb.debian.org/debian"
+			;;
+	esac
+fi
+
+if [ "${TRAVIS_DEBIAN_COMPONENTS:-}" = "" ]
+then
+	case "${TRAVIS_DEBIAN_DERIVATIVE}" in
+		ubuntu)
+			TRAVIS_DEBIAN_COMPONENTS="main restricted universe multiverse"
+			;;
+		*)
+			TRAVIS_DEBIAN_COMPONENTS="main"
+			;;
+	esac
+fi
+
+
 ## Detect autopkgtest tests ###################################################
 
 if [ -e "debian/tests/control" ] || grep -qs -E '^(XS-)?Testsuite: autopkgtest' debian/control
@@ -192,6 +241,7 @@ fi
 
 ## Print configuration ########################################################
 
+Info "Building on: ${TRAVIS_DEBIAN_DERIVATIVE}"
 Info "Using distribution: ${TRAVIS_DEBIAN_DISTRIBUTION}"
 Info "With components: ${TRAVIS_DEBIAN_COMPONENTS}"
 Info "Backports enabled: ${TRAVIS_DEBIAN_BACKPORTS:-<none>}"
@@ -244,7 +294,7 @@ done
 ## Build ######################################################################
 
 cat >Dockerfile <<EOF
-FROM debian:${TRAVIS_DEBIAN_DISTRIBUTION}
+FROM ${TRAVIS_DEBIAN_DERIVATIVE}:${TRAVIS_DEBIAN_DISTRIBUTION}
 RUN echo "deb ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_DISTRIBUTION} ${TRAVIS_DEBIAN_COMPONENTS}" > /etc/apt/sources.list
 RUN echo "deb-src ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_DISTRIBUTION} ${TRAVIS_DEBIAN_COMPONENTS}" >> /etc/apt/sources.list
 EOF
