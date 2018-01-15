@@ -160,6 +160,21 @@ $ git commit -m "Add /.travis.yml to extend-diff-ignore in debian/source/options
         default, this is automatically detected from the branch name.
       </dd>
       <dt>
+        TRAVIS_DEBIAN_DERIVATIVE
+      </dt>
+      <dd>
+        Which Debian derivative to use (eg. <tt>debian</tt> or <tt>ubuntu</tt>).
+        This will use the corresponding
+        <tt>TRAVIS_DEBIAN_DERIVATIVE:DISTRIBUTION</tt> Docker container
+        as a base.
+        Some derivatives are automatically derived from
+        <tt>TRAVIS_DEBIAN_DISTRIBUTION</tt>, and defaults values for
+        <tt>TRAVIS_DEBIAN_MIRROR</tt> and <tt>TRAVIS_DEBIAN_COMPONENTS</tt>
+        are then set. You can still override them as needed.
+        Note that not all features like backports, autopkgtests or security
+        updates may be work, depending on your derivative.
+      </dd>
+      <dt>
         TRAVIS_DEBIAN_COMPONENTS
       </dt>
       <dd>
