@@ -475,8 +475,14 @@ then
 	Indent "${TRAVIS_DEBIAN_TARGET_DIR}"/*.buildinfo
 fi
 
-Info "debc"
-docker exec "$(cat "${CIDFILE}")" /bin/sh -c "debc ${TRAVIS_DEBIAN_BUILD_DIR}/*.changes" | Indent
+DEBC="$(mktemp)"
+docker exec "$(cat "${CIDFILE}")" /bin/sh -c "debc ${TRAVIS_DEBIAN_BUILD_DIR}/*.changes" > "${DEBC}"
+if [ "$(wc -l < "${DEBC}")" -lt 500 ]
+then
+	Info "debc ${TRAVIS_DEBIAN_BUILD_DIR}/*.changes"
+	Indent "${DEBC}
+fi
+rm -f "${DEBC}"
 
 Info "Removing container"
 docker rm -f "$(cat "${CIDFILE}")" >/dev/null
