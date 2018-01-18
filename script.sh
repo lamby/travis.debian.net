@@ -63,6 +63,7 @@ fi
 
 Info "Starting build of ${SOURCE} using travis.debian.net"
 
+TRAVIS_DEBIAN_LINTIAN="${TRAVIS_DEBIAN_LINTIAN:-true}"
 TRAVIS_DEBIAN_BUILD_DIR="${TRAVIS_DEBIAN_BUILD_DIR:-/build}"
 TRAVIS_DEBIAN_TARGET_DIR="${TRAVIS_DEBIAN_TARGET_DIR:-../}"
 TRAVIS_DEBIAN_NETWORK_ENABLED="${TRAVIS_DEBIAN_NETWORK_ENABLED:-false}"
@@ -253,6 +254,7 @@ Info "Will build under: ${TRAVIS_DEBIAN_BUILD_DIR}"
 Info "Will store results under: ${TRAVIS_DEBIAN_TARGET_DIR}"
 Info "Using mirror: ${TRAVIS_DEBIAN_MIRROR}"
 Info "Network enabled during build: ${TRAVIS_DEBIAN_NETWORK_ENABLED}"
+Info "Run Lintian after build: ${TRAVIS_DEBIAN_LINTIAN}"
 Info "Builder command: ${TRAVIS_DEBIAN_GIT_BUILDPACKAGE}"
 Info "Builder command options: ${TRAVIS_DEBIAN_GIT_BUILDPACKAGE_OPTIONS}"
 Info "Increment version number: ${TRAVIS_DEBIAN_INCREMENT_VERSION_NUMBER}"
@@ -336,6 +338,11 @@ then
 	TRAVIS_DEBIAN_EXTRA_PACKAGES="${TRAVIS_DEBIAN_EXTRA_PACKAGES} wget gnupg"
 fi
 
+if [ "${TRAVIS_DEBIAN_LINTIAN}" = "true" ]
+then
+	TRAVIS_DEBIAN_EXTRA_PACKAGES="${TRAVIS_DEBIAN_EXTRA_PACKAGES} lintian"
+fi
+
 for X in $(echo "${TRAVIS_DEBIAN_BACKPORTS}")
 do
         cat >>Dockerfile <<EOF
@@ -372,7 +379,7 @@ docker build --tag="${TAG}.autopkgtests" --file Dockerfile.autopkgtests .
 rm -f Dockerfile.autopkgtests
 
 cat >>Dockerfile <<EOF
-RUN apt-get install --yes --no-install-recommends build-essential equivs devscripts git-buildpackage ca-certificates pristine-tar lintian ${TRAVIS_DEBIAN_EXTRA_PACKAGES}
+RUN apt-get install --yes --no-install-recommends build-essential equivs devscripts git-buildpackage ca-certificates pristine-tar ${TRAVIS_DEBIAN_EXTRA_PACKAGES}
 
 WORKDIR $(pwd)
 COPY . .

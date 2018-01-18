@@ -234,6 +234,14 @@ $ git commit -m "Add /.travis.yml to extend-diff-ignore in debian/source/options
         authenticated.
       </dd>
       <dt>
+        TRAVIS_DEBIAN_LINTIAN
+      </dt>
+      <dd>
+        When <tt>true</tt>, install and run the
+        <a href="https://lintian.debian.org/">Lintian</a> package checker
+        after the build. By default, Lintian is run.
+      </dd>
+      <dt>
         TRAVIS_DEBIAN_TARGET_DIR
       </dt>
       <dd>
