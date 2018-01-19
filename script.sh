@@ -480,7 +480,7 @@ docker exec "$(cat "${CIDFILE}")" /bin/sh -c "debc ${TRAVIS_DEBIAN_BUILD_DIR}/*.
 if [ "$(wc -l < "${DEBC}")" -lt 500 ]
 then
 	Info "debc ${TRAVIS_DEBIAN_BUILD_DIR}/*.changes"
-	Indent "${DEBC}
+	Indent "${DEBC}"
 fi
 rm -f "${DEBC}"
 
