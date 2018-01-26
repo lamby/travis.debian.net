@@ -290,7 +290,7 @@ git fetch
 
 for X in $(git branch -r | grep -v HEAD)
 do
-	git branch --track $(echo "${X}" | sed -e 's@.*/@@g') ${X} || true
+	git branch --track "$(echo "${X}" | sed -e 's@.*/@@g')" "${X}" || true
 done
 
 ## Build ######################################################################
@@ -301,7 +301,7 @@ RUN echo "deb ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_DISTRIBUTION} ${TRAVIS_DEB
 RUN echo "deb-src ${TRAVIS_DEBIAN_MIRROR} ${TRAVIS_DEBIAN_DISTRIBUTION} ${TRAVIS_DEBIAN_COMPONENTS}" >> /etc/apt/sources.list
 EOF
 
-for X in $(echo "${TRAVIS_DEBIAN_BACKPORTS}")
+for X in ${TRAVIS_DEBIAN_BACKPORTS}
 do
 	cat >>Dockerfile <<EOF
 RUN echo "deb ${TRAVIS_DEBIAN_MIRROR} ${X} ${TRAVIS_DEBIAN_COMPONENTS}" >> /etc/apt/sources.list
@@ -343,9 +343,9 @@ then
 	TRAVIS_DEBIAN_EXTRA_PACKAGES="${TRAVIS_DEBIAN_EXTRA_PACKAGES} lintian"
 fi
 
-for X in $(echo "${TRAVIS_DEBIAN_BACKPORTS}")
+for X in ${TRAVIS_DEBIAN_BACKPORTS}
 do
-        cat >>Dockerfile <<EOF
+	cat >>Dockerfile <<EOF
 RUN echo "Package: *" >> /etc/apt/preferences.d/travis_debian_net
 RUN echo "Pin: release a=${X}" >> /etc/apt/preferences.d/travis_debian_net
 RUN echo "Pin-Priority: 500" >> /etc/apt/preferences.d/travis_debian_net
