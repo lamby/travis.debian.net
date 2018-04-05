@@ -63,6 +63,7 @@ fi
 
 Info "Starting build of ${SOURCE} using travis.debian.net"
 
+TAG="travis.debian.net/${SOURCE}"
 TRAVIS_DEBIAN_LINTIAN="${TRAVIS_DEBIAN_LINTIAN:-true}"
 TRAVIS_DEBIAN_BUILD_DIR="${TRAVIS_DEBIAN_BUILD_DIR:-/build}"
 TRAVIS_DEBIAN_TARGET_DIR="${TRAVIS_DEBIAN_TARGET_DIR:-../}"
@@ -244,6 +245,7 @@ fi
 
 Info "Building on: ${TRAVIS_DEBIAN_DERIVATIVE}"
 Info "Using distribution: ${TRAVIS_DEBIAN_DISTRIBUTION}"
+Info "Saving to Docker tag: ${TAG}"
 Info "With components: ${TRAVIS_DEBIAN_COMPONENTS}"
 Info "Backports enabled: ${TRAVIS_DEBIAN_BACKPORTS:-<none>}"
 Info "Experimental enabled: ${TRAVIS_DEBIAN_EXPERIMENTAL}"
@@ -358,9 +360,12 @@ RUN echo 'Acquire::EnableSrvRecords "false";' > /etc/apt/apt.conf.d/90srvrecords
 RUN apt-get update && apt-get dist-upgrade --yes
 EOF
 
-# Take a slight diversion to make a minimal environment for autopkgtests
-cp Dockerfile Dockerfile.autopkgtests
-cat >>Dockerfile.autopkgtests <<EOF
+if [ "${TRAVIS_DEBIAN_AUTOPKGTEST}" = "true" ]
+then
+	# Take a slight diversion to make a minimal environment for
+	# autopkgtests
+	cp Dockerfile Dockerfile.autopkgtests
+	cat >>Dockerfile.autopkgtests <<EOF
 WORKDIR $(pwd)
 COPY . .
 
@@ -368,15 +373,14 @@ RUN rm -f Dockerfile Dockerfile.autopkgtests
 RUN mkdir -p ${TRAVIS_DEBIAN_BUILD_DIR}
 EOF
 
-Info "Using Dockerfile:"
-Indent Dockerfile.autopkgtests
+	Info "Using Dockerfile:"
+	Indent Dockerfile.autopkgtests
 
-TAG="travis.debian.net/${SOURCE}"
+	Info "Building Docker image ${TAG}.autopkgtests"
+	docker build --tag="${TAG}.autopkgtests" --file Dockerfile.autopkgtests .
 
-Info "Building Docker image ${TAG}.autopkgtests"
-docker build --tag="${TAG}.autopkgtests" --file Dockerfile.autopkgtests .
-
-rm -f Dockerfile.autopkgtests
+	rm -f Dockerfile.autopkgtests
+fi
 
 cat >>Dockerfile <<EOF
 RUN apt-get install --yes --no-install-recommends build-essential equivs devscripts git-buildpackage ca-certificates pristine-tar ${TRAVIS_DEBIAN_EXTRA_PACKAGES}
