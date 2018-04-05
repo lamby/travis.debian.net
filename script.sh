@@ -43,6 +43,12 @@ Indent () {
 	sed -e 's@^@  @g' "${@}"
 }
 
+if [ "${TRAVIS_BUILD_NUMBER:-}" = "" ]
+then
+	Error "TRAVIS_BUILD_NUMBER not set; are you running under TravisCI?"
+	exit 2
+fi
+
 ## Configuration ##############################################################
 
 if [ -f debian/changelog ]
