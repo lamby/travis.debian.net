@@ -147,7 +147,7 @@ case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
 	testing)
 		TRAVIS_DEBIAN_DISTRIBUTION="buster"
 		;;
-	unstable|master)
+	unstable|master|debian)
 		TRAVIS_DEBIAN_DISTRIBUTION="sid"
 		;;
 	experimental)
