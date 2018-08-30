@@ -154,7 +154,7 @@ case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
 		;;
 esac
 
-# detect derivatives
+# Detect derivatives
 if [ "${TRAVIS_DEBIAN_DERIVATIVE:-}" = "" ]
 then
 	case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
