@@ -87,11 +87,13 @@ then
 
 	TRAVIS_DEBIAN_DISTRIBUTION="${TRAVIS_BRANCH:-}"
 
+	# Populate from branch name directly if we are not running under Travis.
 	if [ "${TRAVIS_DEBIAN_DISTRIBUTION:-}" = "" ]
 	then
 		TRAVIS_DEBIAN_DISTRIBUTION="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo master)"
 	fi
 
+	# Strip leading "debian/"
 	TRAVIS_DEBIAN_DISTRIBUTION="${TRAVIS_DEBIAN_DISTRIBUTION##debian/}"
 
 	# Detect backports
@@ -208,7 +210,8 @@ case "${TRAVIS_DEBIAN_DERIVATIVE}" in
 		do
 			TRAVIS_DEBIAN_DISTRIBUTION="${TRAVIS_DEBIAN_DISTRIBUTION%%-$suffix}"
 		done
-		# Disable debian security repo, it's an ubuntu pocket
+
+		# Disable debian security repo, it's an Ubuntu pocket
 		TRAVIS_DEBIAN_SECURITY_UPDATES="false"
 		;;
 esac
