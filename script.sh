@@ -432,8 +432,9 @@ Indent Dockerfile
 Info "Building Docker image ${TAG}"
 docker build --tag="${TAG}" .
 
-Info "Removing Dockerfile"
+Info "Restoring Dockerfile to previous state"
 rm -f Dockerfile
+git checkout -- Dockerfile || true
 
 CIDFILE="$(mktemp --dry-run)"
 ARGS="--cidfile=${CIDFILE}"
