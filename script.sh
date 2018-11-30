@@ -202,20 +202,6 @@ case "${TRAVIS_DEBIAN_DISTRIBUTION}" in
 		;;
 esac
 
-# Common options specific to derivatives
-case "${TRAVIS_DEBIAN_DERIVATIVE}" in
-	ubuntu)
-		# Strip component/pocket suffix
-		for suffix in proposed updates security
-		do
-			TRAVIS_DEBIAN_DISTRIBUTION="${TRAVIS_DEBIAN_DISTRIBUTION%%-$suffix}"
-		done
-
-		# Disable debian security repo, it's an Ubuntu pocket
-		TRAVIS_DEBIAN_SECURITY_UPDATES="false"
-		;;
-esac
-
 if [ "${TRAVIS_DEBIAN_MIRROR:-}" = "" ]
 then
 	case "${TRAVIS_DEBIAN_DERIVATIVE}" in
@@ -322,10 +308,20 @@ done
 
 if [ "${TRAVIS_DEBIAN_SECURITY_UPDATES}" = true ]
 then
-	cat >>Dockerfile <<EOF
+    case "${TRAVIS_DEBIAN_DERIVATIVE}" in
+	ubuntu)
+	    cat >>Dockerfile <<EOF
+RUN echo "deb http://archive.ubuntu.com/ubuntu/ ${TRAVIS_DEBIAN_DISTRIBUTION}-updates ${TRAVIS_DEBIAN_COMPONENTS}" >> /etc/apt/sources.list
+RUN echo "deb http://archive.ubuntu.com/ubuntu/ ${TRAVIS_DEBIAN_DISTRIBUTION}-security ${TRAVIS_DEBIAN_COMPONENTS}" >> /etc/apt/sources.list
+EOF
+	    ;;
+	*)
+	    cat >>Dockerfile <<EOF
 RUN echo "deb http://security.debian.org/ ${TRAVIS_DEBIAN_DISTRIBUTION}/updates ${TRAVIS_DEBIAN_COMPONENTS}" >> /etc/apt/sources.list
 RUN echo "deb-src http://security.debian.org/ ${TRAVIS_DEBIAN_DISTRIBUTION}/updates ${TRAVIS_DEBIAN_COMPONENTS}" >> /etc/apt/sources.list
 EOF
+	    ;;
+    esac
 fi
 
 if [ "${TRAVIS_DEBIAN_EXPERIMENTAL}" = true ]
@@ -392,7 +388,7 @@ EOF
 fi
 
 cat >>Dockerfile <<EOF
-RUN apt-get install --yes --no-install-recommends build-essential equivs devscripts git-buildpackage ca-certificates pristine-tar ${TRAVIS_DEBIAN_EXTRA_PACKAGES}
+RUN DEBIAN_FRONTEND=noninteractive apt-get install --yes --no-install-recommends build-essential equivs devscripts git-buildpackage ca-certificates pristine-tar ${TRAVIS_DEBIAN_EXTRA_PACKAGES}
 
 WORKDIR $(pwd)
 COPY . .
