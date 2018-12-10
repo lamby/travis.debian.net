@@ -428,7 +428,7 @@ Indent Dockerfile
 Info "Building Docker image ${TAG}"
 docker build --tag="${TAG}" .
 
-Info "Restoring Dockerfile to previous state"
+Info "Restoring Dockerfile to previous state (safe to ignore errors)"
 rm -f Dockerfile
 git checkout -- Dockerfile || true
 
